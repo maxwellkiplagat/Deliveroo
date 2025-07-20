@@ -11,3 +11,15 @@ parcel_controller = ParcelController()
 @admin_required
 def get_all_parcels():
     return parcel_controller.get_all_parcels()
+
+@admin_bp.route('/parcels/<int:parcel_id>/status', methods=['PUT'])
+@jwt_required()
+@admin_required
+def update_parcel_status(parcel_id):
+    return parcel_controller.update_parcel_status(parcel_id, request.get_json())
+
+@admin_bp.route('/parcels/<int:parcel_id>/location', methods=['PUT'])
+@jwt_required()
+@admin_required
+def update_parcel_location(parcel_id):
+    return parcel_controller.update_parcel_location(parcel_id, request.get_json())
