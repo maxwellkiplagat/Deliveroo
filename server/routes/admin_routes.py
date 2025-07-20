@@ -23,3 +23,9 @@ def update_parcel_status(parcel_id):
 @admin_required
 def update_parcel_location(parcel_id):
     return parcel_controller.update_parcel_location(parcel_id, request.get_json())
+
+@admin_bp.route('/analytics', methods=['GET'])
+@jwt_required()
+@admin_required
+def get_analytics():
+    return parcel_controller.get_analytics()
