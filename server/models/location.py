@@ -8,7 +8,6 @@ class Location(db.Model):
     latitude = db.Column(db.Float)
     longitude = db.Column(db.Float)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
-
     # Foreign keys
     parcel_id = db.Column(db.Integer, db.ForeignKey('parcel.id'), nullable=False)
     
