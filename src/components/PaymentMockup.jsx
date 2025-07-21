@@ -26,4 +26,25 @@ const formatCardNumber = (value) => {
     } else {
       return v;
     }
-}
+};
+ const formatExpiry = (value) => {
+    const v = value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+    if (v.length >= 2) {
+      return v.substring(0, 2) + '/' + v.substring(2, 4);
+    }
+    return v;
+  };
+
+  const handleCardNumberChange = (e) => {
+    const formatted = formatCardNumber(e.target.value);
+    if (formatted.length <= 19) {
+      setCardData({ ...cardData, number: formatted });
+    }
+  };
+
+  const handleExpiryChange = (e) => {
+    const formatted = formatExpiry(e.target.value);
+    if (formatted.length <= 5) {
+      setCardData({ ...cardData, expiry: formatted });
+    }
+  };
