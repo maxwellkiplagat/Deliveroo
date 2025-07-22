@@ -102,3 +102,67 @@ export const throttle = (func, limit) => {
     }
   };
 };
+
+export const sortParcels = (parcels, sortBy) => {
+  const sorted = [...parcels];
+  
+  switch (sortBy) {
+    case 'newest':
+      return sorted.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    case 'oldest':
+      return sorted.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+    case 'status':
+      return sorted.sort((a, b) => a.status.localeCompare(b.status));
+    case 'price':
+      return sorted.sort((a, b) => b.price - a.price);
+    default:
+      return sorted;
+  }
+};
+
+export const filterParcels = (parcels, filters) => {
+  return parcels.filter(parcel => {
+    const matchesSearch = !filters.search || 
+      parcel.trackingNumber.toLowerCase().includes(filters.search.toLowerCase()) ||
+      parcel.senderName.toLowerCase().includes(filters.search.toLowerCase()) ||
+      parcel.receiverName.toLowerCase().includes(filters.search.toLowerCase());
+    
+    const matchesStatus = !filters.status || filters.status === 'all' || parcel.status === filters.status;
+    
+    return matchesSearch && matchesStatus;
+  });
+};
+
+export const exportToPDF = (data, filename = 'export.pdf') => {
+  // Mock PDF export - in real app, use jsPDF or similar
+  console.log('Exporting to PDF:', data);
+  
+  // Create a simple text file for demo
+  const content = JSON.stringify(data, null, 2);
+  const blob = new Blob([content], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = filename.replace('.pdf', '.txt');
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+};
+
+export const copyToClipboard = async (text) => {
+  try {
+    await navigator.clipboard.writeText(text);
+    return true;
+  } catch (err) {
+    // Fallback for older browsers
+    const textArea = document.createElement('textarea');
+    textArea.value = text;
+    document.body.appendChild(textArea);
+    textArea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textArea);
+    return true;
+  }
+};
