@@ -58,3 +58,19 @@ export const DEMO_CREDENTIALS = {
   },
 };
 
+export const GOOGLE_MAPS_CONFIG = {
+  DEFAULT_CENTER: { lat: 40.7128, lng: -74.0060 }, // New York City
+  DEFAULT_ZOOM: 12,
+  MARKER_COLORS: {
+    PICKUP: '#10b981', // emerald-600
+    DESTINATION: '#ef4444', // red-500
+    CURRENT: '#3b82f6', // blue-500
+  },
+};
+
+export const TOAST_DURATION = 5000; // 5 seconds
+
+export const PAGINATION = {
+  DEFAULT_PAGE_SIZE: 10,
+  PAGE_SIZE_OPTIONS: [5, 10, 20, 50],
+};
