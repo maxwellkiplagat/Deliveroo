@@ -292,4 +292,4 @@ const mockApi = {
   }
 };
 
-export default api;
+export default mockApi;
