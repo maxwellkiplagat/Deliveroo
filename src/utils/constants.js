@@ -26,5 +26,35 @@ export const NOTIFICATION_TYPES = {
   WARNING: 'warning',
 };
 
+export const API_ENDPOINTS = {
+  AUTH: {
+    LOGIN: '/auth/login',
+    REGISTER: '/auth/register',
+    PROFILE: '/auth/profile',
+  },
+  PARCELS: {
+    LIST: '/parcels',
+    CREATE: '/parcels',
+    DETAILS: (id) => `/parcels/${id}`,
+    UPDATE: (id) => `/parcels/${id}`,
+    DELETE: (id) => `/parcels/${id}`,
+  },
+  ADMIN: {
+    PARCELS: '/admin/parcels',
+    ANALYTICS: '/admin/analytics',
+    UPDATE_STATUS: (id) => `/admin/parcels/${id}/status`,
+    UPDATE_LOCATION: (id) => `/admin/parcels/${id}/location`,
+  },
+};
 
+export const DEMO_CREDENTIALS = {
+  USER: {
+    email: 'john@example.com',
+    password: 'password',
+  },
+  ADMIN: {
+    email: 'admin@deliveroo.com',
+    password: 'admin',
+  },
+};
 
