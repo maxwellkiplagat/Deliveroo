@@ -9,3 +9,15 @@ function Modal({ isOpen, onClose, title, children, size = 'md' }) {
     xl: 'max-w-4xl',
   };
 
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen]);
+
