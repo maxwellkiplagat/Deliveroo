@@ -12,5 +12,19 @@ export const USER_ROLES = {
   COURIER: 'courier',
 };
 
+export const PRICING_TIERS = [
+  { min: 0, max: 1, rate: 10, label: 'Light Package' },
+  { min: 1, max: 5, rate: 8, label: 'Medium Package' },
+  { min: 5, max: 20, rate: 6, label: 'Heavy Package' },
+  { min: 20, max: Infinity, rate: 4, label: 'Extra Heavy Package' },
+];
+
+export const NOTIFICATION_TYPES = {
+  SUCCESS: 'success',
+  ERROR: 'error',
+  INFO: 'info',
+  WARNING: 'warning',
+};
+
 
 
