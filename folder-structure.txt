@@ -1,0 +1,118 @@
+.
+├── babel.config.js
+├── .bolt
+│   ├── config.json
+│   └── prompt
+├── database
+│   └── seed.py
+├── .env
+├── .env.example
+├── eslint.config.js
+├── folder-structure.txt
+├── .gitignore
+├── index.html
+├── jest.config.js
+├── migrations
+│   ├── alembic.ini
+│   ├── env.py
+│   ├── README
+│   ├── script.py.mako
+│   └── versions
+│       └── 3884a892e3e2_.py
+├── package.json
+├── package-lock.json
+├── postcss.config.js
+├── pytest.ini
+├── README.md
+├── server
+│   ├── app.py
+│   ├── config.py
+│   ├── controllers
+│   │   ├── auth_controller.py
+│   │   ├── email_controller.py
+│   │   └── parcel_controller.py
+│   ├── models
+│   │   ├── __init__.py
+│   │   ├── location.py
+│   │   ├── parcel.py
+│   │   └── user.py
+│   ├── requirements.txt
+│   ├── routes
+│   │   ├── admin_routes.py
+│   │   ├── auth_routes.py
+│   │   └── parcel_routes.py
+│   ├── schemas
+│   │   ├── __init__.py
+│   │   ├── parcel_schema.py
+│   │   └── user_schema.py
+│   └── utils
+│       ├── decorators.py
+│       ├── email.py
+│       └── jwt.py
+├── src
+│   ├── App.jsx
+│   ├── components
+│   │   ├── AddressAutocomplete.jsx
+│   │   ├── CourierAssignment.jsx
+│   │   ├── CourierManagement.jsx
+│   │   ├── DeliveryAnalytics.jsx
+│   │   ├── EmailNotifications.jsx
+│   │   ├── LoadingSpinner.jsx
+│   │   ├── MapView.jsx
+│   │   ├── Modal.jsx
+│   │   ├── Navbar.jsx
+│   │   ├── NotificationCenter.jsx
+│   │   ├── ParcelCard.jsx
+│   │   ├── ParcelTracker.jsx
+│   │   ├── PaymentMockup.jsx
+│   │   ├── PricingCalculator.jsx
+│   │   ├── ProgressBar.jsx
+│   │   ├── SavedAddresses.jsx
+│   │   ├── SearchFilter.jsx
+│   │   ├── StatsCard.jsx
+│   │   ├── StatusBadge.jsx
+│   │   ├── Timeline.jsx
+│   │   └── ToastNotification.jsx
+│   ├── hooks
+│   │   ├── useDebounce.js
+│   │   └── useLocalStorage.js
+│   ├── index.css
+│   ├── main.jsx
+│   ├── pages
+│   │   ├── AdminPanel.jsx
+│   │   ├── Dashboard.jsx
+│   │   ├── Home.jsx
+│   │   ├── Login.jsx
+│   │   ├── ParcelDetails.jsx
+│   │   └── Register.jsx
+│   ├── redux
+│   │   ├── notificationSlice.js
+│   │   ├── parcelsSlice.js
+│   │   ├── store.js
+│   │   └── userSlice.js
+│   ├── services
+│   │   └── api.js
+│   ├── styles
+│   │   └── index.css
+│   ├── utils
+│   │   ├── auth.js
+│   │   ├── constants.js
+│   │   └── helpers.js
+│   └── vite-env.d.ts
+├── tailwind.config.js
+├── tests
+│   ├── backend
+│   │   ├── test_auth.py
+│   │   └── test_parcels.py
+│   └── frontend
+│       ├── App.test.jsx
+│       ├── components
+│       │   ├── ParcelCard.test.jsx
+│       │   └── StatusBadge.test.jsx
+│       └── setupTests.js
+├── tsconfig.app.json
+├── tsconfig.json
+├── tsconfig.node.json
+└── vite.config.ts
+
+23 directories, 93 files
