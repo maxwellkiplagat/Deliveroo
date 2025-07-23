@@ -88,6 +88,24 @@ function Dashboard() {
     }
   };
 
+  const handleSavedAddressSelect = (savedAddress, type) => {
+    const addressType = type || 'pickupAddress';
+    setFormData(prev => ({
+      ...prev,
+      [addressType]: savedAddress.address,
+      [`${addressType.replace('Address', '')}Coords`]: savedAddress.coordinates
+    }));
+
+    // Update map locations
+    const locationType = addressType.replace('Address', '');
+    setMapLocations(prev => ({
+      ...prev,
+      [locationType]: savedAddress.coordinates
+    }));
+
+    setShowMap(true);
+    setShowAddressModal(false);
+  };
   const handleLocationSelect = (locationData, type) => {
     const locationType = type || (formData.pickupAddress && !formData.destinationAddress ? 'destination' : 'pickup');
     
@@ -265,6 +283,7 @@ function Dashboard() {
         // Send email notification
         sendParcelCreatedEmail(parcelData);
         
+        // Auto-close the form after successful creation
         handleCloseModal();
       } else {
         dispatch(addNotification({
@@ -278,6 +297,9 @@ function Dashboard() {
         message: 'Failed to create parcel. Please try again.'
       }));
     });
+    
+    // Close payment modal immediately after processing
+    setShowPaymentModal(false);
   };
 
   const sendParcelCreatedEmail = (parcelData) => {
@@ -764,7 +786,7 @@ function Dashboard() {
         title="Saved Addresses"
         size="lg"
       >
-        <SavedAddresses />
+        <SavedAddresses onSelectAddress={handleSavedAddressSelect} />
       </Modal>
     </div>
   );

@@ -161,18 +161,18 @@ function AddressAutocomplete({
             if (savedAddresses.length > 0) setShowSaved(true);
           }}
           placeholder={placeholder}
-          className={`w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 ${className}`}
+          className={`w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all duration-200 hover:border-gray-400 ${className}`}
         />
         {isGeocoding && (
           <div className="absolute right-2 top-2">
-            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-emerald-600"></div>
+            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-emerald-600 border-t-2"></div>
           </div>
         )}
         {value && onSaveAddress && (
           <button
             type="button"
             onClick={handleSaveCurrentAddress}
-            className={`absolute ${isGeocoding ? 'right-8' : 'right-2'} top-2 text-xs text-emerald-600 hover:text-emerald-700 px-2 py-1 rounded`}
+            className={`absolute ${isGeocoding ? 'right-10' : 'right-2'} top-2 text-xs text-emerald-600 hover:text-emerald-700 px-2 py-1 rounded hover:bg-emerald-50 transition-colors`}
           >
             Save
           </button>
@@ -181,11 +181,11 @@ function AddressAutocomplete({
 
       {/* Saved Addresses */}
       {showSaved && savedAddresses.length > 0 && (
-        <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-48 overflow-y-auto">
-          <div className="p-2 border-b border-gray-200">
+        <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-xl shadow-xl max-h-48 overflow-y-auto animate-fadeInUp">
+          <div className="p-3 border-b border-gray-200 bg-gradient-to-r from-gray-50 to-gray-100">
             <div className="flex items-center space-x-2 text-sm text-gray-600">
               <Clock className="h-4 w-4" />
-              <span>Recent Addresses</span>
+              <span className="font-medium">Recent Addresses</span>
             </div>
           </div>
           {savedAddresses.map((address, index) => (
@@ -193,7 +193,7 @@ function AddressAutocomplete({
               key={index}
               type="button"
               onClick={() => handleSelectAddress(address)}
-              className="w-full text-left px-3 py-2 hover:bg-gray-50 text-sm border-b border-gray-100 last:border-b-0"
+              className="w-full text-left px-4 py-3 hover:bg-gradient-to-r hover:from-emerald-50 hover:to-blue-50 text-sm border-b border-gray-100 last:border-b-0 transition-all duration-200"
             >
               <div className="flex items-center space-x-2">
                 <MapPin className="h-3 w-3 text-gray-400" />
@@ -206,13 +206,13 @@ function AddressAutocomplete({
 
       {/* Address Suggestions */}
       {showSuggestions && suggestions.length > 0 && (
-        <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-48 overflow-y-auto">
+        <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-xl shadow-xl max-h-48 overflow-y-auto animate-fadeInUp">
           {suggestions.map((suggestion, index) => (
             <button
               key={index}
               type="button"
               onClick={() => handleSelectAddress(suggestion)}
-              className="w-full text-left px-3 py-2 hover:bg-gray-50 text-sm border-b border-gray-100 last:border-b-0"
+              className="w-full text-left px-4 py-3 hover:bg-gradient-to-r hover:from-emerald-50 hover:to-blue-50 text-sm border-b border-gray-100 last:border-b-0 transition-all duration-200"
             >
               <div className="flex items-center space-x-2">
                 <MapPin className="h-3 w-3 text-gray-400" />

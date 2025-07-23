@@ -204,7 +204,9 @@ deliveroo/
    ```bash
    cd server
    python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   source venv/bin/activate
+   export PYTHONPATH=$PYTHONPATH:$(pwd)/server
+   export FLASK_APP=server.app:create_app # On Windows: venv\Scripts\activate
    ```
 
 2. **Install dependencies**:
