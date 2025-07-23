@@ -11,6 +11,7 @@ import AddressAutocomplete from '../components/AddressAutocomplete';
 import PricingCalculator from '../components/PricingCalculator';
 import PaymentMockup from '../components/PaymentMockup';
 import SavedAddresses from '../components/SavedAddresses';
+import LiveMapView from '../components/LiveMapView';
 import { sortParcels, filterParcels } from '../utils/helpers';
 
 function Dashboard() {
@@ -22,6 +23,13 @@ function Dashboard() {
   const [sortBy, setSortBy] = useState('newest');
   const [currentStep, setCurrentStep] = useState(1);
   const [calculatedPrice, setCalculatedPrice] = useState(0);
+
+  // Map state
+  const [showMap, setShowMap] = useState(false);
+  const [mapLocations, setMapLocations] = useState({
+    pickup: null,
+    destination: null
+  });
 
   const [formData, setFormData] = useState({
     senderName: '',
@@ -61,6 +69,45 @@ function Dashboard() {
         lng: -74.0060 + Math.random() * 0.1
       }
     }));
+
+    // Update map locations
+    const locationType = type.replace('Address', '');
+    setMapLocations(prev => ({
+      ...prev,
+      [locationType]: address.coordinates || {
+        lat: 40.7128 + Math.random() * 0.1,
+        lng: -74.0060 + Math.random() * 0.1
+      }
+    }));
+
+    // Show map when both locations are set
+    if (locationType === 'pickup' && formData.destinationAddress) {
+      setShowMap(true);
+    } else if (locationType === 'destination' && formData.pickupAddress) {
+      setShowMap(true);
+    }
+  };
+
+  const handleLocationSelect = (locationData, type) => {
+    const locationType = type || (formData.pickupAddress && !formData.destinationAddress ? 'destination' : 'pickup');
+    
+    setMapLocations(prev => ({
+      ...prev,
+      [locationType]: locationData.coordinates
+    }));
+
+    // Update form data with the address
+    const addressField = locationType === 'pickup' ? 'pickupAddress' : 'destinationAddress';
+    const coordsField = locationType === 'pickup' ? 'pickupCoords' : 'destinationCoords';
+    
+    setFormData(prev => ({
+      ...prev,
+      [addressField]: locationData.address,
+      [coordsField]: locationData.coordinates
+    }));
+
+    // Show map when location is selected
+    setShowMap(true);
   };
 
   const handlePriceCalculated = (price) => {
@@ -201,27 +248,31 @@ function Dashboard() {
       ...formData,
       price: calculatedPrice,
       paymentInfo: paymentData,
-      pickupCoords: formData.pickupCoords || {
-        lat: 40.7128,
-        lng: -74.0060
-      },
-      destinationCoords: formData.destinationCoords || {
-        lat: 40.6782,
-        lng: -73.9442
-      }
+      pickupCoords: mapLocations.pickup || formData.pickupCoords,
+      destinationCoords: mapLocations.destination || formData.destinationCoords
     };
 
-    dispatch(createParcel(parcelData)).then(() => {
-      dispatch(addNotification({
-        type: 'success',
-        message: 'Parcel created successfully!'
-      }));
-      
-      // Send email notification
-      sendParcelCreatedEmail(parcelData);
-      
-      handleCloseModal();
-    }).catch(() => {
+    dispatch(createParcel(parcelData)).then((result) => {
+      if (result.type === 'parcels/createParcel/fulfilled') {
+        // Refresh parcels list
+        dispatch(fetchParcels());
+        
+        dispatch(addNotification({
+          type: 'success',
+          message: 'Parcel created successfully!'
+        }));
+        
+        // Send email notification
+        sendParcelCreatedEmail(parcelData);
+        
+        handleCloseModal();
+      } else {
+        dispatch(addNotification({
+          type: 'error',
+          message: 'Failed to create parcel. Please try again.'
+        }));
+      }
+    }).catch((error) => {
       dispatch(addNotification({
         type: 'error',
         message: 'Failed to create parcel. Please try again.'
@@ -230,7 +281,7 @@ function Dashboard() {
   };
 
   const sendParcelCreatedEmail = (parcelData) => {
-    // Mock email sending
+    const locationType = type || (mapLocations.pickup && !mapLocations.destination ? 'destination' : 'pickup');
     setTimeout(() => {
       dispatch(addNotification({
         type: 'info',
@@ -256,6 +307,8 @@ function Dashboard() {
       destinationCoords: null,
     });
     setCalculatedPrice(0);
+    setShowMap(false);
+    setMapLocations({ pickup: null, destination: null });
   };
 
   const handleClearFilters = () => {
@@ -511,161 +564,209 @@ function Dashboard() {
             </div>
           )}
 
-      {/* Step 2: Addresses */}
-      {currentStep === 2 && (
-        <div className="space-y-4">
-          <h3 className="text-lg font-medium">Pickup & Delivery Addresses</h3>
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Pickup Address *
-              </label>
-              <AddressAutocomplete
-                value={formData.pickupAddress}
-                onChange={(value) => handleAddressSelect(value, 'pickupAddress')}
-                placeholder="Enter pickup address"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Destination Address *
-              </label>
-              <AddressAutocomplete
-                value={formData.destinationAddress}
-                onChange={(value) => handleAddressSelect(value, 'destinationAddress')}
-                placeholder="Enter destination address"
-              />
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Step 3: Weight & Pricing */}
-      {currentStep === 3 && (
-        <div className="space-y-4">
-          <h3 className="text-lg font-medium">Package Details & Pricing</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Step 2: Addresses */}
+          {currentStep === 2 && (
             <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Weight (kg) *
-                </label>
-                <div className="relative">
-                  <Weight className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                  <input
-                    type="number"
-                    name="weight"
-                    step="0.1"
-                    min="0.1"
-                    max="100"
-                    required
-                    value={formData.weight}
-                    onChange={handleInputChange}
-                    title="Weight must be between 0.1 and 100 kg"
-                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                    placeholder="Enter weight in kg"
+              <h3 className="text-lg font-medium">Pickup & Delivery Addresses</h3>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Pickup Address *
+                  </label>
+                  <AddressAutocomplete
+                    value={formData.pickupAddress}
+                    onChange={(value) => handleAddressSelect({ address: value }, 'pickupAddress')}
+                    onLocationSelect={(locationData) => handleLocationSelect(locationData, 'pickup')}
+                    placeholder="Enter pickup address"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Destination Address *
+                  </label>
+                  <AddressAutocomplete
+                    value={formData.destinationAddress}
+                    onChange={(value) => handleAddressSelect({ address: value }, 'destinationAddress')}
+                    onLocationSelect={(locationData) => handleLocationSelect(locationData, 'destination')}
+                    placeholder="Enter destination address"
+                  />
+                </div>
+                
+                {/* Live Map Preview */}
+                {showMap && (mapLocations.pickup || mapLocations.destination) && (
+                  <div className="col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Route Preview
+                    </label>
+                    <LiveMapView
+                      pickup={mapLocations.pickup}
+                      destination={mapLocations.destination}
+                      className="h-64 border border-gray-300 rounded-lg"
+                      showControls={true}
+                      autoCenter={true}
+                    />
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Step 3: Weight & Pricing */}
+          {currentStep === 3 && (
+            <div className="space-y-4">
+              <h3 className="text-lg font-medium">Package Details & Pricing</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Weight (kg) *
+                    </label>
+                    <div className="relative">
+                      <Weight className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                      <input
+                        type="number"
+                        name="weight"
+                        step="0.1"
+                        min="0.1"
+                        max="100"
+                        required
+                        value={formData.weight}
+                        onChange={handleInputChange}
+                        title="Weight must be between 0.1 and 100 kg"
+                        className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                        placeholder="Enter weight in kg"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Special Instructions
+                    </label>
+                    <textarea
+                      name="specialInstructions"
+                      value={formData.specialInstructions}
+                      onChange={handleInputChange}
+                      rows={3}
+                      maxLength="500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                      placeholder="Any special handling instructions..."
+                    />
+                    <div className="text-xs text-gray-500 mt-1">
+                      {formData.specialInstructions.length}/500 characters
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <PricingCalculator
+                    weight={parseFloat(formData.weight) || 0}
+                    onPriceCalculated={handlePriceCalculated}
                   />
                 </div>
               </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Special Instructions
-                </label>
-                <textarea
-                  name="specialInstructions"
-                  value={formData.specialInstructions}
-                  onChange={handleInputChange}
-                  rows={3}
-                  maxLength="500"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                  placeholder="Any special handling instructions..."
-                />
-                <div className="text-xs text-gray-500 mt-1">
-                  {formData.specialInstructions.length}/500 characters
+              
+              {/* Show map with route in step 3 if locations are available */}
+              {showMap && mapLocations.pickup && mapLocations.destination && (
+                <div className="mt-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Delivery Route
+                  </label>
+                  <LiveMapView
+                    pickup={mapLocations.pickup}
+                    destination={mapLocations.destination}
+                    className="h-48 border border-gray-300 rounded-lg"
+                    showControls={false}
+                    autoCenter={true}
+                  />
                 </div>
+              )}
+            </div>
+          )}
+
+          {/* Step 4: Review */}
+          {currentStep === 4 && (
+            <div className="space-y-4">
+              <h3 className="text-lg font-medium">Review Your Order</h3>
+              <div className="bg-gray-50 p-4 rounded-lg space-y-3">
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div>
+                    <span className="font-medium">From:</span> {formData.senderName}
+                  </div>
+                  <div>
+                    <span className="font-medium">To:</span> {formData.receiverName}
+                  </div>
+                  <div className="col-span-2">
+                    <span className="font-medium">Route:</span> {formData.pickupAddress} → {formData.destinationAddress}
+                  </div>
+                  <div>
+                    <span className="font-medium">Weight:</span> {formData.weight} kg
+                  </div>
+                  <div>
+                    <span className="font-medium">Total Price:</span> 
+                    <span className="text-lg font-bold text-emerald-600 ml-2">
+                      ${calculatedPrice}
+                    </span>
+                  </div>
+                </div>
+                
+                {/* Final route confirmation map */}
+                {showMap && mapLocations.pickup && mapLocations.destination && (
+                  <div className="mt-4">
+                    <h4 className="font-medium mb-2">Delivery Route Confirmation</h4>
+                    <LiveMapView
+                      pickup={mapLocations.pickup}
+                      destination={mapLocations.destination}
+                      className="h-48 border border-gray-300 rounded-lg"
+                      showControls={false}
+                      autoCenter={true}
+                    />
+                  </div>
+                )}
               </div>
             </div>
-            <div>
-              <PricingCalculator
-                weight={parseFloat(formData.weight) || 0}
-                onPriceCalculated={handlePriceCalculated}
-              />
-            </div>
+          )}
+
+          {/* Navigation Buttons */}
+          <div className="flex justify-between pt-6">
+            <button
+              onClick={currentStep === 1 ? handleCloseModal : handlePrevStep}
+              className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+            >
+              {currentStep === 1 ? 'Cancel' : 'Previous'}
+            </button>
+            <button
+              onClick={handleNextStep}
+              className="px-6 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors"
+            >
+              {currentStep === 4 ? 'Proceed to Payment' : 'Next'}
+            </button>
           </div>
         </div>
-      )}
+      </Modal>
 
-      {/* Step 4: Review */}
-      {currentStep === 4 && (
-        <div className="space-y-4">
-          <h3 className="text-lg font-medium">Review Your Order</h3>
-          <div className="bg-gray-50 p-4 rounded-lg space-y-3">
-            <div className="grid grid-cols-2 gap-4 text-sm">
-              <div>
-                <span className="font-medium">From:</span> {formData.senderName}
-              </div>
-              <div>
-                <span className="font-medium">To:</span> {formData.receiverName}
-              </div>
-              <div className="col-span-2">
-                <span className="font-medium">Route:</span> {formData.pickupAddress} → {formData.destinationAddress}
-              </div>
-              <div>
-                <span className="font-medium">Weight:</span> {formData.weight} kg
-              </div>
-              <div>
-                <span className="font-medium">Total Price:</span> 
-                <span className="text-lg font-bold text-emerald-600 ml-2">
-                  ${calculatedPrice}
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Payment Modal */}
+      <Modal
+        isOpen={showPaymentModal}
+        onClose={() => setShowPaymentModal(false)}
+        title="Complete Payment"
+        size="md"
+      >
+        <PaymentMockup
+          amount={calculatedPrice}
+          onPaymentComplete={handlePaymentComplete}
+          onCancel={() => setShowPaymentModal(false)}
+        />
+      </Modal>
 
-      {/* Navigation Buttons */}
-      <div className="flex justify-between pt-6">
-        <button
-          onClick={currentStep === 1 ? handleCloseModal : handlePrevStep}
-          className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
-        >
-          {currentStep === 1 ? 'Cancel' : 'Previous'}
-        </button>
-        <button
-          onClick={handleNextStep}
-          className="px-6 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors"
-        >
-          {currentStep === 4 ? 'Proceed to Payment' : 'Next'}
-        </button>
-      </div>
+      {/* Saved Addresses Modal */}
+      <Modal
+        isOpen={showAddressModal}
+        onClose={() => setShowAddressModal(false)}
+        title="Saved Addresses"
+        size="lg"
+      >
+        <SavedAddresses />
+      </Modal>
     </div>
-  </Modal>
-
-  {/* Payment Modal */}
-  <Modal
-    isOpen={showPaymentModal}
-    onClose={() => setShowPaymentModal(false)}
-    title="Complete Payment"
-    size="md"
-  >
-    <PaymentMockup
-      amount={calculatedPrice}
-      onPaymentComplete={handlePaymentComplete}
-      onCancel={() => setShowPaymentModal(false)}
-    />
-  </Modal>
-
-  {/* Saved Addresses Modal */}
-  <Modal
-    isOpen={showAddressModal}
-    onClose={() => setShowAddressModal(false)}
-    title="Saved Addresses"
-    size="lg"
-  >
-    <SavedAddresses />
-  </Modal>
-</div>
   );
 }
 

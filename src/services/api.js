@@ -93,9 +93,12 @@ let mockCouriers = [
 ];
 
 const mockUsers = [
-  { id: 1, name: 'John Doe', email: 'john@example.com', role: 'user', phone: '+1234567890' },
-  { id: 2, name: 'Admin User', email: 'admin@deliveroo.com', role: 'admin', phone: '+1987654321' }
+  { id: 1, name: 'John Doe', email: 'john@example.com', role: 'user', phone: '+1234567890', password: 'password' },
+  { id: 2, name: 'Admin User', email: 'admin@deliveroo.com', role: 'admin', phone: '+1987654321', password: 'admin' }
 ];
+
+// Store registered users
+let registeredUsers = [...mockUsers];
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -120,33 +123,38 @@ const mockApi = {
       setTimeout(() => {
         if (url === '/auth/login') {
           const { email, password } = data;
-          if (email === 'john@example.com' && password === 'password') {
+          const user = registeredUsers.find(u => u.email === email && u.password === password);
+          if (user) {
+            const { password: _, ...userWithoutPassword } = user;
             resolve({
               data: {
-                user: mockUsers[0],
-                token: 'mock-token-123'
-              }
-            });
-          } else if (email === 'admin@deliveroo.com' && password === 'admin') {
-            resolve({
-              data: {
-                user: mockUsers[1],
-                token: 'mock-admin-token-456'
+                user: userWithoutPassword,
+                token: `mock-token-${user.id}-${Date.now()}`
               }
             });
           } else {
             reject(new Error('Invalid credentials'));
           }
         } else if (url === '/auth/register') {
+          // Check if user already exists
+          if (registeredUsers.find(u => u.email === data.email)) {
+            reject(new Error('Email already registered'));
+            return;
+          }
+          
           const newUser = {
             id: Date.now(),
             ...data,
-            role: 'user'
+            role: 'user',
+            createdAt: new Date().toISOString()
           };
+          registeredUsers.push(newUser);
+          
+          const { password: _, ...userWithoutPassword } = newUser;
           resolve({
             data: {
-              user: newUser,
-              token: 'mock-token-new'
+              user: userWithoutPassword,
+              token: `mock-token-${newUser.id}-${Date.now()}`
             }
           });
         } else if (url === '/parcels') {
@@ -172,7 +180,7 @@ const mockApi = {
             trackingNumber: `DEL${Date.now().toString().slice(-6)}`,
             status: 'pending',
             createdAt: new Date().toISOString(),
-            userId: 1,
+            userId: getCurrentUserId(),
             courierAssigned: null,
             deliveryDeadline: new Date(Date.now() + 48 * 60 * 60 * 1000).toISOString(),
             canUpdate: canUpdate,
@@ -183,10 +191,20 @@ const mockApi = {
           };
           mockParcels = [...mockParcels, newParcel];
           resolve({ data: newParcel });
+        } else if (url === '/notifications') {
+          const newNotification = {
+            id: Date.now(),
+            userId: getCurrentUserId(),
+            ...data,
+            createdAt: new Date().toISOString(),
+            read: false
+          };
+          mockNotifications = [...mockNotifications, newNotification];
+          resolve({ data: newNotification });
         } else if (url === '/saved-addresses') {
           const newAddress = {
             id: Date.now(),
-            userId: 1,
+            userId: getCurrentUserId(),
             ...data
           };
           mockSavedAddresses = [...mockSavedAddresses, newAddress];
@@ -209,9 +227,25 @@ const mockApi = {
     return new Promise((resolve) => {
       setTimeout(() => {
         if (url === '/parcels') {
-          resolve({ data: [...mockParcels] });
+          const currentUserId = getCurrentUserId();
+          const currentUser = getCurrentUser();
+          
+          if (currentUser?.role === 'admin') {
+            // Admin sees all parcels
+            resolve({ data: [...mockParcels] });
+          } else {
+            // Regular users see only their parcels
+            const userParcels = mockParcels.filter(p => p.userId === currentUserId);
+            resolve({ data: userParcels });
+          }
+        } else if (url === '/notifications') {
+          const currentUserId = getCurrentUserId();
+          const userNotifications = mockNotifications.filter(n => n.userId === currentUserId);
+          resolve({ data: userNotifications });
         } else if (url === '/saved-addresses') {
-          resolve({ data: [...mockSavedAddresses] });
+          const currentUserId = getCurrentUserId();
+          const userAddresses = mockSavedAddresses.filter(a => a.userId === currentUserId);
+          resolve({ data: userAddresses });
         } else if (url === '/couriers') {
           resolve({ data: [...mockCouriers] });
         } else if (url === '/admin/parcels') {
@@ -283,7 +317,7 @@ const mockApi = {
           const id = parseInt(url.split('/').pop());
           const addressIndex = mockSavedAddresses.findIndex(a => a.id === id);
           if (addressIndex !== -1) {
-            mockParcels.splice(parcelIndex, 1);
+            mockSavedAddresses.splice(addressIndex, 1);
           }
           resolve({ data: { success: true } });
         }
@@ -291,5 +325,33 @@ const mockApi = {
     });
   }
 };
+
+// Helper functions to get current user info
+function getCurrentUserId() {
+  const token = localStorage.getItem('token');
+  if (!token) return null;
+  
+  // Extract user ID from mock token format: mock-token-{userId}-{timestamp}
+  const parts = token.split('-');
+  return parts.length >= 3 ? parseInt(parts[2]) : null;
+}
+
+function getCurrentUser() {
+  const userId = getCurrentUserId();
+  return userId ? registeredUsers.find(u => u.id === userId) : null;
+}
+
+// Mock notifications data
+let mockNotifications = [
+  {
+    id: 1,
+    userId: 1,
+    type: 'parcel_created',
+    title: 'Parcel Created Successfully',
+    message: 'Your parcel DEL001 has been created and is pending pickup',
+    createdAt: new Date(Date.now() - 30 * 60 * 1000).toISOString(),
+    read: false
+  }
+];
 
 export default mockApi;

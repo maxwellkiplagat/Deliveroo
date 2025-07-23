@@ -6,7 +6,7 @@ import { addNotification } from '../redux/notificationSlice';
 import { format } from 'date-fns';
 import { ArrowLeft, Edit, Trash2, MapPin, Calendar, Weight, DollarSign, Phone, User } from 'lucide-react';
 import StatusBadge from '../components/StatusBadge';
-import MapView from '../components/MapView';
+import LiveMapView from '../components/LiveMapView';
 
 function ParcelDetails() {
   const { id } = useParams();
@@ -248,11 +248,13 @@ function ParcelDetails() {
             {/* Right Column - Map */}
             <div>
               <h2 className="text-xl font-semibold mb-4">Delivery Map</h2>
-              <MapView
+              <LiveMapView
                 pickup={parcel.pickupCoords}
                 destination={parcel.destinationCoords}
                 currentLocation={parcel.currentLocation}
-                className="shadow-lg"
+                className="shadow-lg h-80"
+                showControls={true}
+                autoCenter={true}
               />
             </div>
           </div>

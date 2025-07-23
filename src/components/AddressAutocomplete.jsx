@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { MapPin, Clock } from 'lucide-react';
+import useDebounce from '../hooks/useDebounce';
 
 function AddressAutocomplete({ 
   value, 
@@ -7,37 +8,136 @@ function AddressAutocomplete({
   placeholder, 
   savedAddresses = [],
   onSaveAddress,
+  onLocationSelect,
   className = '' 
 }) {
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [showSaved, setShowSaved] = useState(false);
+  const [isGeocoding, setIsGeocoding] = useState(false);
+  const [placesService, setPlacesService] = useState(null);
+  const [geocoder, setGeocoder] = useState(null);
   const inputRef = useRef(null);
+  const debouncedValue = useDebounce(value, 500);
 
-  // Mock address suggestions (in real app, use Google Places API)
-  const mockSuggestions = [
-    '123 Main Street, New York, NY 10001',
-    '456 Broadway, New York, NY 10013',
-    '789 Fifth Avenue, New York, NY 10022',
-    '321 Park Avenue, New York, NY 10010',
-    '654 Wall Street, New York, NY 10005',
-  ];
-
+  // Initialize Google Maps services
   useEffect(() => {
-    if (value.length > 2) {
-      const filtered = mockSuggestions.filter(addr => 
-        addr.toLowerCase().includes(value.toLowerCase())
-      );
-      setSuggestions(filtered);
-      setShowSuggestions(true);
+    const initializeGoogleMaps = async () => {
+      if (window.google && window.google.maps) {
+        const geocoderInstance = new window.google.maps.Geocoder();
+        setGeocoder(geocoderInstance);
+        
+        // Create a dummy map for places service
+        const map = new window.google.maps.Map(document.createElement('div'));
+        const placesServiceInstance = new window.google.maps.places.PlacesService(map);
+        setPlacesService(placesServiceInstance);
+      }
+    };
+
+    if (window.google) {
+      initializeGoogleMaps();
     } else {
+      // Load Google Maps API if not already loaded
+      const script = document.createElement('script');
+      const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places`;
+      script.onload = initializeGoogleMaps;
+      document.head.appendChild(script);
+    }
+  }, []);
+
+  // Get place predictions from Google Places API
+  const getPlacePredictions = (input) => {
+    if (!placesService || !input || input.length < 3) {
       setSuggestions([]);
       setShowSuggestions(false);
+      return;
     }
-  }, [value]);
 
-  const handleSelectAddress = (address) => {
-    onChange(address);
+    const service = new window.google.maps.places.AutocompleteService();
+    service.getPlacePredictions(
+      {
+        input: input,
+        types: ['address', 'establishment', 'geocode'],
+        componentRestrictions: {} // Remove to allow worldwide search
+      },
+      (predictions, status) => {
+        if (status === window.google.maps.places.PlacesServiceStatus.OK && predictions) {
+          setSuggestions(predictions.map(p => ({
+            description: p.description,
+            placeId: p.place_id
+          })));
+          setShowSuggestions(true);
+        } else {
+          setSuggestions([]);
+          setShowSuggestions(false);
+        }
+      }
+    );
+  };
+
+  // Geocode address to get coordinates
+  const geocodeAddress = (address, placeId = null) => {
+    if (!geocoder) return;
+
+    setIsGeocoding(true);
+    
+    const request = placeId 
+      ? { placeId: placeId }
+      : { address: address };
+
+    geocoder.geocode(request, (results, status) => {
+      setIsGeocoding(false);
+      
+      if (status === 'OK' && results[0]) {
+        const location = results[0].geometry.location;
+        const coordinates = {
+          lat: location.lat(),
+          lng: location.lng()
+        };
+        
+        if (onLocationSelect) {
+          onLocationSelect({
+            address: results[0].formatted_address,
+            coordinates: coordinates,
+            placeId: results[0].place_id
+          });
+        }
+      } else {
+        console.error('Geocoding failed:', status);
+      }
+    });
+  };
+  useEffect(() => {
+    getPlacePredictions(debouncedValue);
+  }, [debouncedValue, placesService]);
+
+  useEffect(() => {
+    if (debouncedValue.length > 10 && !showSuggestions) {
+      // Geocode the current value if no suggestions are shown
+      geocodeAddress(debouncedValue);
+    }
+  }, [debouncedValue, showSuggestions, geocoder]);
+
+  const handleSelectAddress = (suggestion) => {
+    if (typeof suggestion === 'string') {
+      // Handle saved address selection
+      onChange(suggestion);
+      geocodeAddress(suggestion);
+    } else if (suggestion.placeId) {
+      // Handle Google Places suggestion
+      onChange(suggestion.description);
+      geocodeAddress(suggestion.description, suggestion.placeId);
+    } else {
+      // Handle manual address object
+      const addressString = suggestion.address || suggestion;
+      onChange(addressString);
+      
+      if (suggestion.coordinates && onLocationSelect) {
+        onLocationSelect(suggestion);
+      }
+    }
+    
     setShowSuggestions(false);
     setShowSaved(false);
   };
@@ -63,11 +163,16 @@ function AddressAutocomplete({
           placeholder={placeholder}
           className={`w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 ${className}`}
         />
+        {isGeocoding && (
+          <div className="absolute right-2 top-2">
+            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-emerald-600"></div>
+          </div>
+        )}
         {value && onSaveAddress && (
           <button
             type="button"
             onClick={handleSaveCurrentAddress}
-            className="absolute right-2 top-2 text-xs text-emerald-600 hover:text-emerald-700 px-2 py-1 rounded"
+            className={`absolute ${isGeocoding ? 'right-8' : 'right-2'} top-2 text-xs text-emerald-600 hover:text-emerald-700 px-2 py-1 rounded`}
           >
             Save
           </button>
@@ -111,7 +216,7 @@ function AddressAutocomplete({
             >
               <div className="flex items-center space-x-2">
                 <MapPin className="h-3 w-3 text-gray-400" />
-                <span>{suggestion}</span>
+                <span>{suggestion.description || suggestion}</span>
               </div>
             </button>
           ))}

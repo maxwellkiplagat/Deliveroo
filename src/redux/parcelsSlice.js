@@ -11,9 +11,13 @@ export const fetchParcels = createAsyncThunk(
 
 export const createParcel = createAsyncThunk(
   'parcels/createParcel',
-  async (parcelData) => {
-    const response = await api.post('/parcels', parcelData);
-    return response.data;
+  async (parcelData, { rejectWithValue }) => {
+    try {
+      const response = await api.post('/parcels', parcelData);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.message || 'Failed to create parcel');
+    }
   }
 );
 
