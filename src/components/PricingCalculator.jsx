@@ -6,17 +6,17 @@ function PricingCalculator({ weight, onPriceCalculated }) {
   const [breakdown, setBreakdown] = useState({});
 
   const pricingTiers = [
-    { min: 0, max: 1, rate: 12, label: 'Light Package (0-1kg)', color: 'text-green-600' },
-    { min: 1, max: 5, rate: 10, label: 'Medium Package (1-5kg)', color: 'text-blue-600' },
-    { min: 5, max: 20, rate: 8, label: 'Heavy Package (5-20kg)', color: 'text-orange-600' },
-    { min: 20, max: Infinity, rate: 6, label: 'Extra Heavy (20kg+)', color: 'text-red-600' },
+    { min: 0, max: 1, rate: 150, label: 'Light Package (0-1kg)', color: 'text-green-600' },
+    { min: 1, max: 5, rate: 120, label: 'Medium Package (1-5kg)', color: 'text-blue-600' },
+    { min: 5, max: 20, rate: 90, label: 'Heavy Package (5-20kg)', color: 'text-orange-600' },
+    { min: 20, max: Infinity, rate: 60, label: 'Extra Heavy (20kg+)', color: 'text-red-600' },
   ];
 
   const additionalFees = {
-    base: 3,
-    insurance: 1.5,
-    handling: 2.5,
-    fuel: 1,
+    base: 100,
+    insurance: 50,
+    handling: 75,
+    fuel: 30,
   };
 
   useEffect(() => {
@@ -60,37 +60,37 @@ function PricingCalculator({ weight, onPriceCalculated }) {
       {weight > 0 && breakdown.total && (
         <div className="space-y-2">
           <div className="flex justify-between text-sm">
-            <span className={`font-medium ${breakdown.tierColor}`}>{breakdown.tier}</span>
-            <span className="text-gray-600">${breakdown.rate}/kg</span>
+            <span className="text-gray-600">Ksh{breakdown.rate}/kg</span>
           </div>
           <div className="flex justify-between text-sm">
-            <span className="text-gray-600">Base Cost ({breakdown.weight}kg × ${breakdown.rate})</span>
-            <span>${breakdown.basePrice.toFixed(2)}</span>
+            <span>Ksh{breakdown.basePrice.toFixed(2)}</span>
           </div>
           
           <div className="border-t pt-2 space-y-1">
             <div className="flex justify-between text-xs text-gray-500">
+            <span className={`font-medium Ksh{breakdown.tierColor}`}>{breakdown.tier}</span>
               <span>Service Fee</span>
-              <span>${breakdown.fees.base.toFixed(2)}</span>
             </div>
             <div className="flex justify-between text-xs text-gray-500">
+            <span className="text-gray-600">Base Cost ({breakdown.weight}kg × Ksh{breakdown.rate})</span>
               <span>Insurance</span>
-              <span>${breakdown.fees.insurance.toFixed(2)}</span>
             </div>
             <div className="flex justify-between text-xs text-gray-500">
               <span>Handling</span>
-              <span>${breakdown.fees.handling.toFixed(2)}</span>
             </div>
             <div className="flex justify-between text-xs text-gray-500">
+              <span>Ksh{breakdown.fees.base.toFixed(2)}</span>
               <span>Fuel Surcharge</span>
-              <span>${breakdown.fees.fuel.toFixed(2)}</span>
+              <span>Ksh{breakdown.fees.fuel.toFixed(2)}</span>
             </div>
+              <span>Ksh{breakdown.fees.insurance.toFixed(2)}</span>
           </div>
           
           <hr className="my-2" />
+              <span>Ksh{breakdown.fees.handling.toFixed(2)}</span>
           <div className="flex justify-between font-bold text-lg">
             <span>Total</span>
-            <span className="text-emerald-600">${breakdown.total}</span>
+            <span className="text-emerald-600">Ksh{breakdown.total}</span>
           </div>
           
           <div className="flex items-start space-x-2 mt-3 p-2 bg-emerald-50 rounded">
@@ -112,7 +112,7 @@ function PricingCalculator({ weight, onPriceCalculated }) {
           {pricingTiers.map((tier, index) => (
             <div key={index} className="flex justify-between text-xs">
               <span className={tier.color}>{tier.label}</span>
-              <span className="text-gray-600">${tier.rate}/kg</span>
+              <span className="text-gray-600">Ksh{tier.rate}/kg</span>
             </div>
           ))}
         </div>
