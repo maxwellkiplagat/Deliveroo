@@ -725,7 +725,7 @@ function Dashboard() {
                   <div>
                     <span className="font-medium">Total Price:</span> 
                     <span className="text-lg font-bold text-emerald-600 ml-2">
-                      ${calculatedPrice}
+                      Ksh {calculatedPrice}
                     </span>
                   </div>
                 </div>

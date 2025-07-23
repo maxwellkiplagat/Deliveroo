@@ -146,7 +146,7 @@ function ParcelDetails() {
                     <DollarSign className="h-5 w-5 text-gray-400" />
                     <div>
                       <p className="text-sm text-gray-500">Price</p>
-                      <p className="font-medium">${parcel.price}</p>
+                      <p className="font-medium">Ksh {parcel.price}</p>
                     </div>
                   </div>
                   {parcel.deliveryDeadline && (

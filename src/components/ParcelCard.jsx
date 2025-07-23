@@ -47,7 +47,7 @@ function ParcelCard({ parcel }) {
 
         <div className="flex items-center justify-between pt-4">
           <span className="text-lg font-bold text-emerald-600">
-            ${parcel.price}
+            Ksh {parcel.price}
           </span>
           <Link
             to={`/parcel/${parcel.id}`}

@@ -97,7 +97,7 @@ function PaymentMockup({ amount, onPaymentComplete, onCancel }) {
       <div className="mb-6 p-4 bg-gray-50 rounded-lg">
         <div className="flex justify-between items-center">
           <span className="font-medium">Total Amount:</span>
-          <span className="text-2xl font-bold text-emerald-600">${amount.toFixed(2)}</span>
+          <span className="text-2xl font-bold text-emerald-600">Ksh {amount.toFixed(2)}</span>
         </div>
       </div>
 
@@ -214,7 +214,7 @@ function PaymentMockup({ amount, onPaymentComplete, onCancel }) {
                   Processing...
                 </>
               ) : (
-                `Pay $${amount}`
+                `Pay Ksh ${amount}`
               )}
             </button>
           </div>
