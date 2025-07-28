@@ -75,8 +75,9 @@ function ParcelDetails() {
       });
     }
   };
+  const canEdit = parcel.canUpdate && !['delivered', 'cancelled'].includes(parcel.status.toLowerCase());
 
-  const canEdit = parcel.canUpdate && parcel.status.toLowerCase() === 'pending';
+  // const canEdit = parcel.canUpdate && parcel.status.toLowerCase() === 'pending';
   console.log('canEdit:', canEdit, 'status:', parcel.status, 'canUpdate:', parcel.canUpdate);
 
   const canCancel = parcel.status !== 'delivered' && parcel.status !== 'cancelled';
