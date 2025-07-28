@@ -104,7 +104,7 @@ function DeliveryAnalytics() {
         <StatCard
           icon={DollarSign}
           title="Revenue"
-          value={`$${data.revenue.toLocaleString()}`}
+          value={`Ksh ${data.revenue.toLocaleString()}`}
           change={15.7}
           color="green"
         />
