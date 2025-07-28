@@ -78,6 +78,33 @@ export const updateParcel = createAsyncThunk(
     }
   }
 );
+export const updateParcelLocation = createAsyncThunk(
+  'parcels/updateParcelLocation',
+  async ({ id, location }, thunkAPI) => {
+    try {
+      const state = thunkAPI.getState();
+      const token = state.user?.token;
+
+      const response = await api.put(
+        `/admin/parcels/${id}/location`,
+        { currentLocation: location },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          }
+        }
+      );
+
+      return response.data;
+    } catch (error) {
+      console.error('Update location failed:', error);
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || 'Failed to update parcel location'
+      );
+    }
+  }
+);
+
 
 
 // Cancel parcel
@@ -154,7 +181,14 @@ const parcelsSlice = createSlice({
       // Cancel parcel
       .addCase(cancelParcel.fulfilled, (state, action) => {
         state.parcels = state.parcels.filter(p => p.id !== action.payload.id);
+      })
+      .addCase(updateParcelLocation.fulfilled, (state, action) => {
+        const index = state.parcels.findIndex(p => p.id === action.payload.id);
+        if (index !== -1) {
+          state.parcels[index] = action.payload;
+        }
       });
+
   },
 });
 

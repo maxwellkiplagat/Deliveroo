@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { updateParcel, fetchAllParcelsForAdmin } from '../redux/parcelsSlice';
+import { updateParcel, fetchAllParcelsForAdmin,updateParcelLocation } from '../redux/parcelsSlice';
 import { addNotification } from '../redux/notificationSlice';
 import { Search, Filter, Edit, BarChart3, Package, Users, TrendingUp } from 'lucide-react';
 import StatusBadge from '../components/StatusBadge';
@@ -104,19 +104,18 @@ function AdminPanel() {
       return;
     }
     
-    dispatch(updateParcel({ 
-      id: parcelId, 
-      updates: { 
-        currentLocation: newLocation,
-        timeline: [
-          ...(parcel.timeline || []),
-          {
-            status: parcel.status,
-            timestamp: new Date().toISOString(),
-            location: 'Location updated by Admin'
-          }
-        ]
-      } 
+    dispatch(updateParcelLocation({
+      id: parcelId,
+      location: newLocation,
+      timeline: [
+        ...(parcel.timeline || []),
+        {
+          status: parcel.status,
+          timestamp: new Date().toISOString(),
+          location: 'Location updated by Admin'
+        }
+      ]
+
     })).then(() => {
       safeAddNotification({
         type: 'success',

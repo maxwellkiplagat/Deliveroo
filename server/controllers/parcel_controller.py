@@ -339,6 +339,42 @@ class ParcelController:
         except Exception as e:
             db.session.rollback()
             return jsonify({'error': str(e)}), 500
+    def update_parcel_location(self, parcel_id, data):
+        try:
+            parcel = Parcel.query.get(parcel_id)
+            if not parcel:
+                return jsonify({'error': 'Parcel not found'}), 404
+
+            new_location = data.get('currentLocation')
+            if not new_location or 'lat' not in new_location or 'lng' not in new_location:
+                return jsonify({'error': 'Invalid currentLocation format'}), 400
+
+            lat = float(new_location['lat'])
+            lng = float(new_location['lng'])
+
+            # Update current_lat and current_lng in Parcel table
+            parcel.current_lat = lat
+            parcel.current_lng = lng
+            db.session.add(parcel)
+
+            # Save location log entry
+            location_entry = Location(
+                status=parcel.status,
+                location_description=f"Lat: {lat}, Lng: {lng}",  # Human-readable string
+                latitude=lat,
+                longitude=lng,
+                parcel_id=parcel_id
+            )
+            db.session.add(location_entry)
+            db.session.commit()
+
+            return jsonify({'message': 'Parcel location updated', 'parcel': parcel.to_dict()}), 200
+
+        except Exception as e:
+            db.session.rollback()
+            print("❌ Location update error:", e)
+            return jsonify({'error': str(e)}), 500
+
 
     def _geocode_address(self, address):
         try:
