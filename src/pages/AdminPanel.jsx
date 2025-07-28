@@ -95,7 +95,13 @@ function AdminPanel() {
 
   const handleLocationUpdate = (parcelId, newLocation) => {
     const parcel = parcels.find(p => p.id === parcelId);
-    
+    if (parcel.status === 'cancelled') {
+      safeAddNotification({
+        type: 'error',
+        message: 'Cannot update location of a cancelled parcel'
+      });
+      return;
+    }    
     if (!parcel || !newLocation || typeof newLocation.lat !== 'number' || typeof newLocation.lng !== 'number') {
       safeAddNotification({
         type: 'error',
@@ -357,7 +363,8 @@ function AdminPanel() {
                             if (!newStatus) return;
                             
                             // Check if status change is allowed
-                            if (parcel.status === 'delivered' && newStatus !== 'delivered') {
+                            if ((parcel.status === 'delivered' && newStatus !== 'delivered')||
+                                (parcel.status === 'cancelled' && newStatus !== 'cancelled')){
                               alert('Cannot change status of delivered parcels');
                               return;
                             }
