@@ -23,3 +23,7 @@ dist-ssr
 *.sln
 *.sw?
 .env
+# Python virtual environment
+server/venv/
+echo "__pycache__/" > server/.gitignore
+echo "server/venv/" >> server/.gitignore
