@@ -86,19 +86,45 @@ function LiveMapView({
     if (currentLocation) {
       const currentMarker = new window.google.maps.Marker({
         position: currentLocation,
-        map,
-        label: 'C',
+        map,        
         title: 'Current Location',
         icon: {
-          path: window.google.maps.SymbolPath.CIRCLE,
-          scale: 6,
-          fillColor: '#4285F4',
+          path: window.google.maps.SymbolPath.STAR,
+          scale: 12,
+          fillColor: '#00bfff',
           fillOpacity: 1,
-          strokeColor: '#fff',
+          strokeColor: '#00bfff',
           strokeWeight: 2,
+        },
+        label: {
+          text: 'C',
+          color: '',
+          fontWeight: 'bold',
         },
       });
       markersRef.current.push(currentMarker);
+      let scale = 12;
+      let growing = true;
+
+      const heartbeat = setInterval(() => {
+        if (!currentMarker.getMap()) {
+          clearInterval(heartbeat);
+          return;
+        }
+
+        if (growing) {
+          scale += 0.3;
+          if (scale >= 16) growing = false;
+        } else {
+          scale -= 0.3;
+          if (scale <= 12) growing = true;
+        }
+
+        currentMarker.setIcon({
+          ...currentMarker.getIcon(),
+          scale,
+        });
+      }, 10);
     }
 
     // Adjust viewport
@@ -123,7 +149,7 @@ function LiveMapView({
         suppressMarkers: true,
         preserveViewport: true,
         polylineOptions: {
-          strokeColor: '#10b981',
+          strokeColor: '#00bfff',
           strokeOpacity: 0.8,
           strokeWeight: 4,
         },
