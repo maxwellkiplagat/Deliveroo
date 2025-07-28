@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { CreditCard, Lock, Check, AlertCircle, Shield } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 function PaymentMockup({ amount, onPaymentComplete, onCancel }) {
   const [paymentMethod, setPaymentMethod] = useState('card');
@@ -11,6 +12,7 @@ function PaymentMockup({ amount, onPaymentComplete, onCancel }) {
   });
   const [processing, setProcessing] = useState(false);
   const [completed, setCompleted] = useState(false);
+  const navigate = useNavigate(); 
 
   const formatCardNumber = (value) => {
     const v = value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
@@ -67,6 +69,7 @@ function PaymentMockup({ amount, onPaymentComplete, onCancel }) {
             status: 'completed'
           });
         }
+        navigate('/dashboard');
       }, 1500);
     }, 2000);
   };
@@ -258,6 +261,7 @@ function PaymentMockup({ amount, onPaymentComplete, onCancel }) {
                         transactionId: `PP${Date.now()}`,
                         status: 'completed'
                       });
+                      navigate('/dashboard');
                     }
                   }, 1500);
                 }, 2000);

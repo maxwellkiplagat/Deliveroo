@@ -354,4 +354,4 @@ let mockNotifications = [
   }
 ];
 
-export default mockApi;
+export default api;

@@ -7,7 +7,7 @@ function MapView({ pickup, destination, currentLocation, className = '' }) {
   const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
   useEffect(() => {
-    // Check if API key is available
+    
     if (!apiKey) {
       console.error('Google Maps API key not found. Please set VITE_GOOGLE_MAPS_API_KEY in your .env file');
       return;
@@ -129,10 +129,11 @@ function MapView({ pickup, destination, currentLocation, className = '' }) {
     );
   }
 
-  return (
-    <div className={`w-full h-96 rounded-lg overflow-hidden ${className}`}>
+  return (    
+    <div className={`w-full h-[300px] sm:h-[400px] md:h-[500px] rounded-lg overflow-hidden ${className}`}>
       <div ref={mapRef} className="w-full h-full" />
     </div>
+
   );
 }
 
