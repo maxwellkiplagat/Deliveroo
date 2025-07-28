@@ -17,19 +17,20 @@ def create_parcel():
     user_id = get_jwt_identity()
     return parcel_controller.create_parcel(user_id, request.get_json())
 
-@parcel_bp.route('/<int:parcel_id>', methods=['GET'])
+@parcel_bp.route('/<string:parcel_id>', methods=['GET'])
 @jwt_required()
 def get_parcel(parcel_id):
     user_id = get_jwt_identity()
-    return parcel_controller.get_parcel(user_id, parcel_id)
+    parcel= parcel_controller.get_parcel(user_id, parcel_id)
+    return jsonify(parcel.to_dict())
 
-@parcel_bp.route('/<int:parcel_id>', methods=['PUT'])
+@parcel_bp.route('/<string:parcel_id>', methods=['PUT'])
 @jwt_required()
 def update_parcel(parcel_id):
     user_id = get_jwt_identity()
     return parcel_controller.update_parcel(user_id, parcel_id, request.get_json())
 
-@parcel_bp.route('/<int:parcel_id>', methods=['DELETE'])
+@parcel_bp.route('/<string:parcel_id>/cancel', methods=['PUT'])
 @jwt_required()
 def cancel_parcel(parcel_id):
     user_id = get_jwt_identity()

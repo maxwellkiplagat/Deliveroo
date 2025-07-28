@@ -21,7 +21,7 @@ class Parcel(db.Model):
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
     # Foreign keys
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     
     # Relationships
     locations = db.relationship('Location', backref='parcel', lazy=True, cascade='all, delete-orphan')
@@ -43,5 +43,7 @@ class Parcel(db.Model):
             'createdAt': self.created_at.isoformat(),
             'updatedAt': self.updated_at.isoformat(),
             'userId': self.user_id,
-            'timeline': [location.to_dict() for location in self.locations]
+            'timeline': [location.to_dict() for location in self.locations],
+            'canUpdate': self.status == 'pending',
+   
         }

@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { updateParcel, cancelParcel } from '../redux/parcelsSlice';
 import { addNotification } from '../redux/notificationSlice';
 import { format } from 'date-fns';
-import { ArrowLeft, Edit, Trash2, MapPin, Calendar, Weight, DollarSign, Phone, User } from 'lucide-react';
+import { ArrowLeft, Edit, Trash2, MapPin, Calendar, Weight, Banknote, Phone, User } from 'lucide-react';
 import StatusBadge from '../components/StatusBadge';
 import LiveMapView from '../components/LiveMapView';
 
@@ -54,6 +54,7 @@ function ParcelDetails() {
         type: 'success',
         message: 'Parcel updated successfully!'
       }));
+      navigate('/dashboard');
     });
   };
 
@@ -75,7 +76,9 @@ function ParcelDetails() {
     }
   };
 
-  const canEdit = parcel.canUpdate && (parcel.status === 'pending' || parcel.status === 'picked_up');
+  const canEdit = parcel.canUpdate && parcel.status.toLowerCase() === 'pending';
+  console.log('canEdit:', canEdit, 'status:', parcel.status, 'canUpdate:', parcel.canUpdate);
+
   const canCancel = parcel.status !== 'delivered' && parcel.status !== 'cancelled';
 
   return (
@@ -143,7 +146,7 @@ function ParcelDetails() {
                     </div>
                   </div>
                   <div className="flex items-center space-x-3">
-                    <DollarSign className="h-5 w-5 text-gray-400" />
+                    <Banknote className="h-5 w-5 text-gray-400" />
                     <div>
                       <p className="text-sm text-gray-500">Price</p>
                       <p className="font-medium">Ksh {parcel.price}</p>
@@ -249,10 +252,11 @@ function ParcelDetails() {
             <div>
               <h2 className="text-xl font-semibold mb-4">Delivery Map</h2>
               <LiveMapView
+                key={`${parcel.pickupCoords?.lat}-${parcel.destinationCoords?.lat}`}
                 pickup={parcel.pickupCoords}
                 destination={parcel.destinationCoords}
                 currentLocation={parcel.currentLocation}
-                className="shadow-lg h-80"
+                className="shadow-lg h-[100px] sm:h-[200px] md:h-[300px] lg:h-[400px]"
                 showControls={true}
                 autoCenter={true}
               />

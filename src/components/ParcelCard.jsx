@@ -6,6 +6,7 @@ import StatusBadge from './StatusBadge';
 
 function ParcelCard({ parcel }) {
   return (
+    
     <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
       <div className="flex justify-between items-start mb-4">
         <div className="flex items-center space-x-2">

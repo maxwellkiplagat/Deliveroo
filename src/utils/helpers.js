@@ -121,6 +121,10 @@ export const sortParcels = (parcels, sortBy) => {
 };
 
 export const filterParcels = (parcels, filters) => {
+  if (!Array.isArray(parcels)) {
+    console.warn('Expected parcels to be an array, but got:', typeof parcels, parcels);
+    return [];
+  }
   return parcels.filter(parcel => {
     const matchesSearch = !filters.search || 
       parcel.trackingNumber.toLowerCase().includes(filters.search.toLowerCase()) ||
