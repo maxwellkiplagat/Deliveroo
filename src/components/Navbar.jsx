@@ -2,7 +2,7 @@ import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { logout } from '../redux/userSlice';
-import { Package, User, LogOut, Shield } from 'lucide-react';
+import { Package, User, LogOut, Shield,CarTaxiFront  } from 'lucide-react';
 import NotificationCenter from './NotificationCenter';
 
 function Navbar() {
@@ -20,7 +20,7 @@ function Navbar() {
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center h-16">
           <Link to="/" className="flex items-center space-x-2">
-            <Package className="h-8 w-8 text-emerald-600" />
+            <CarTaxiFront className="h-8 w-8 text-emerald-600" />
             <span className="text-2xl font-bold text-emerald-600">Deliveroo</span>
           </Link>
 
