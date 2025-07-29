@@ -60,11 +60,6 @@ A comprehensive web-based courier service application that enables users to crea
 - **Marshmallow** - Data validation
 - **Flask-CORS** - Cross-origin requests
 
-### Testing
-- **Jest** - Frontend testing
-- **React Testing Library** - Component testing
-- **Pytest** - Backend testing
-
 ### Tools & Services
 - **Google Maps API** - Maps and geocoding
 - **Vite** - Build tool
