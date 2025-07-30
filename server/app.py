@@ -4,6 +4,7 @@ from flask_jwt_extended import JWTManager
 from flask_mail import Mail
 from flask_migrate import Migrate  
 
+
 from server.config.config import Config
 from models import db
 from routes.auth_routes import auth_bp

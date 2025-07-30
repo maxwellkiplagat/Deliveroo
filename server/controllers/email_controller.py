@@ -1,6 +1,6 @@
 from flask import current_app
 from flask_mail import Message
-from server.utils.email import mail
+from utils.email import mail
 import threading
 
 class EmailController:
