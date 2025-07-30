@@ -5,11 +5,10 @@ from flask_mail import Mail
 from flask_migrate import Migrate  
 
 from config import Config
-from models import db
-from routes.auth_routes import auth_bp
-from routes.parcel_routes import parcel_bp
-from routes.admin_routes import admin_bp
-
+from server.models import db  # Changed this line
+from server.routes.auth_routes import auth_bp  # Consistent absolute imports
+from server.routes.parcel_routes import parcel_bp
+from server.routes.admin_routes import admin_bp
 
 migrate = Migrate()
 
