@@ -33,7 +33,7 @@
 #     return parcel_controller.get_analytics()
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from server.controllers.parcel_controller import ParcelController
+from controllers.parcel_controller import ParcelController
 from utils.decorators import admin_required
 
 admin_bp = Blueprint('admin', __name__)

@@ -1,7 +1,7 @@
 from flask import jsonify
 from flask_jwt_extended import create_access_token
-from server.models import db, User
-from server.utils.email import send_welcome_email
+from models import db, User
+from utils.email import send_welcome_email
 
 class AuthController:
     def register(self, data):

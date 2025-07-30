@@ -155,7 +155,7 @@
 
 
 from flask import jsonify
-from server.models import db, Parcel, Location, User
+from models import db, Parcel, Location, User
 from utils.email import send_status_update_email
 import uuid
 import traceback 

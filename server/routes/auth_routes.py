@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
-from server.controllers.auth_controller import AuthController
+from controllers.auth_controller import AuthController
 
 auth_bp = Blueprint('auth', __name__)
 auth_controller = AuthController()
