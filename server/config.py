@@ -1,5 +1,8 @@
 import os
 from datetime import timedelta
+from dotenv import load_dotenv
+
+load_dotenv()  # Load environment variables from .env
 
 class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY') or '4dea5666bafbe5d37fa275114a1285968b00ee944d3f22c232f36ff8723e594c'
