@@ -5,8 +5,8 @@ from dotenv import load_dotenv
 load_dotenv()  # Load environment variables from .env
 
 class Config:
-    SECRET_KEY = os.environ.get('SECRET_KEY') or '4dea5666bafbe5d37fa275114a1285968b00ee944d3f22c232f36ff8723e594c'
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'postgresql://eddie:zeddie20062306@localhost:5432/deliveroo_db'
+    SECRET_KEY = os.environ.get('SECRET_KEY') 
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'postgresql://username:password@localhost:5432/dbname'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     JWT_SECRET_KEY = os.environ.get('JWT_SECRET_KEY') or 'jwt-secret-key'
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=24)
