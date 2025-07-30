@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { updateParcel, cancelParcel } from '../redux/parcelsSlice';
+import { updateParcelDestination, cancelParcel,updateParcelReceiver } from '../redux/parcelsSlice';
 import { addNotification } from '../redux/notificationSlice';
 import { format } from 'date-fns';
 import { ArrowLeft, Edit, Trash2, MapPin, Calendar, Weight, Banknote, Phone, User } from 'lucide-react';
@@ -47,15 +47,42 @@ function ParcelDetails() {
     setIsEditing(true);
   };
 
-  const handleSaveEdit = () => {
-    dispatch(updateParcel({ id: parcel.id, updates: editData })).then(() => {
+  const handleSaveEdit = async () => {
+    try {
+      // Update destination if changed
+      if (editData.destinationAddress !== parcel.destinationAddress) {
+        await dispatch(updateParcelDestination({ 
+          id: parcel.id, 
+          destination: editData.destinationAddress 
+        })).unwrap();
+
+        dispatch(addNotification({
+          type: 'success',
+          message: 'Destination updated!',
+        }));
+      }
+
+      // Update receiver name if changed
+      if (editData.receiverName !== parcel.receiverName) {
+        await dispatch(updateParcelReceiver({ 
+          id: parcel.id, 
+          receiverName: editData.receiverName 
+        })).unwrap();
+
+        dispatch(addNotification({
+          type: 'success',
+          message: 'Receiver info updated!',
+        }));
+      }
+
       setIsEditing(false);
-      dispatch(addNotification({
-        type: 'success',
-        message: 'Parcel updated successfully!'
-      }));
       navigate('/dashboard');
-    });
+    } catch (err) {
+      dispatch(addNotification({
+        type: 'error',
+        message: err?.message || 'Update failed. Try again!',
+      }));
+    }
   };
 
   const handleCancel = () => {
