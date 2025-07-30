@@ -225,31 +225,7 @@ class ParcelController:
         except Exception as e:
             return jsonify({'error': str(e)}), 500
 
-    # def update_parcel_status(self, parcel_id, data):
-    #     try:
-    #         parcel = Parcel.query.get(parcel_id)
-    #         if not parcel:
-    #             return jsonify({'error': 'Parcel not found'}), 404
-            
-    #         old_status = parcel.status
-    #         parcel.status = data['status']
-            
-    #         location = Location(
-    #             status=data['status'],
-    #             location_description=data.get('location', 'Status updated'),
-    #             parcel_id=parcel_id
-    #         )
-    #         db.session.add(location)
-    #         db.session.commit()
-            
-    #         user = User.query.get(parcel.user_id)
-    #         if user:
-    #             send_status_update_email(user.email, parcel.tracking_number, old_status, data['status'])
-            
-    #         return jsonify(parcel.to_dict()), 200
-    #     except Exception as e:
-    #         db.session.rollback()
-    #         return jsonify({'error': str(e)}), 500
+    
     def update_parcel_status(self, parcel_id, data):
         try:
             parcel = Parcel.query.get(parcel_id)
@@ -372,8 +348,54 @@ class ParcelController:
 
         except Exception as e:
             db.session.rollback()
-            print("❌ Location update error:", e)
+            print(" Location update error:", e)
             return jsonify({'error': str(e)}), 500
+
+    
+    def update_user_parcel_destination(self, user_id, parcel_id, data):
+        parcel = Parcel.query.get(parcel_id)
+        if not parcel:
+            return jsonify({'error': 'Parcel not found'}), 404
+
+        if parcel.user_id != user_id:
+            return jsonify({'error': 'Not authorized'}), 403
+
+        if parcel.status != 'pending':
+            return jsonify({'error': 'Parcel can no longer be updated'}), 400
+
+        new_destination = data.get('destination')
+        if not new_destination:
+            return jsonify({'error': 'Destination is required'}), 400
+
+       
+        geo = self._geocode_address(new_destination)
+        if not geo:
+            return jsonify({'error': 'Geocoding failed'}), 500
+
+        parcel.destination_address = new_destination
+        parcel.destination_lat = geo['lat']
+        parcel.destination_lng = geo['lng']
+        db.session.commit()
+
+        return jsonify({
+            'message': 'Destination updated',
+            'parcel': parcel.to_dict()
+        }), 200
+    def update_receiver_details(self, parcel_id, receiverName):
+        parcel = Parcel.query.get(parcel_id)
+        if not parcel:
+            return {'error': 'Parcel not found'}, 404
+
+        if receiverName:
+            parcel.receiver_name = receiverName
+
+        db.session.commit()
+        return parcel.to_dict(), 200
+    def track_parcel(self, tracking_number):
+        parcel = Parcel.query.filter_by(tracking_number=tracking_number).first()
+        if not parcel:
+            return jsonify({"error": "Parcel not found"}), 404
+        return jsonify(parcel.to_dict()), 200
 
 
     def _geocode_address(self, address):
