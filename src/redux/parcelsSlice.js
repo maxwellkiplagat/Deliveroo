@@ -104,6 +104,63 @@ export const updateParcelLocation = createAsyncThunk(
     }
   }
 );
+export const updateParcelDestination = createAsyncThunk(
+  'parcels/updateParcelDestination',
+  async ({ id, destination,receiverName }, thunkAPI) => {
+    try {
+      const state = thunkAPI.getState();
+      const token = state.user?.token;
+
+      const response = await api.put(
+        `/parcels/${id}/destination`, 
+        { destination,
+          receiverName
+         },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      return response.data;
+    } catch (error) {
+      console.error('Update destination failed:', error);
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || 'Failed to update destination'
+      );
+    }
+  }
+);
+export const updateParcelReceiver = createAsyncThunk(
+  'parcels/updateParcelReceiver',
+  async ({ id, receiverName }, thunkAPI) => {
+    try {
+      const state = thunkAPI.getState();
+      const token = state.user?.token;
+
+      const response = await api.put(
+        `/parcels/${id}/receiver`,
+        { receiverName },
+
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      return response.data;
+    } catch (error) {
+      console.error('Update receiver failed:', error);
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || 'Failed to update receiver'
+      );
+    }
+  }
+);
+
+
 
 
 
@@ -187,7 +244,20 @@ const parcelsSlice = createSlice({
         if (index !== -1) {
           state.parcels[index] = action.payload;
         }
+      })
+      .addCase(updateParcelDestination.fulfilled, (state, action) => {
+        const index = state.parcels.findIndex(p => p.id === action.payload.id);
+        if (index !== -1) {
+          state.parcels[index] = action.payload;
+        }
+      })
+      .addCase(updateParcelReceiver.fulfilled, (state, action) => {
+        const index = state.parcels.findIndex(p => p.id === action.payload.id);
+        if (index !== -1) {
+          state.parcels[index] = action.payload;
+        }
       });
+
 
   },
 });
