@@ -35,3 +35,29 @@ def update_parcel(parcel_id):
 def cancel_parcel(parcel_id):
     user_id = get_jwt_identity()
     return parcel_controller.cancel_parcel(user_id, parcel_id)
+@parcel_bp.route('/<string:parcel_id>/destination', methods=['PUT'])
+@jwt_required()
+def update_user_parcel_destination(parcel_id):
+    user_id = get_jwt_identity()
+    data = request.get_json()
+    destination = data.get('destination')
+    if not destination:
+        return jsonify({'error': 'Destination is required'}), 400
+
+    return parcel_controller.update_user_parcel_destination(user_id, parcel_id, data)
+@parcel_bp.route('/<string:parcel_id>/receiver', methods=['PUT'])
+@jwt_required()
+def updateParcelReceiver(parcel_id):
+    data = request.get_json()
+    parcel_id = request.view_args['parcel_id']
+    receiverName = data.get('receiverName')
+  
+
+    if not receiverName :
+        return jsonify({'error': 'At least one of receiverName '}), 400
+
+    result = parcel_controller.update_receiver_details(parcel_id, receiverName)
+    return jsonify(result)
+@parcel_bp.route('/track/<string:tracking_number>', methods=['GET'])
+def track_parcel(tracking_number):
+    return parcel_controller.track_parcel(tracking_number)
