@@ -27,9 +27,9 @@ def create_app():
     Mail(app)
     CORS(app, resources={r"/api/*": {"origins": "http://localhost:5173"}}, supports_credentials=True, methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"], allow_headers=["Content-Type", "Authorization"])
     
-    from server .routes.auth_routes import auth_bp
-    from server.routes.parcel_routes import parcel_bp
-    from server.routes.admin_routes import admin_bp
+    from routes.auth_routes import auth_bp
+    from routes.parcel_routes import parcel_bp
+    from routes.admin_routes import admin_bp
     app.register_blueprint(auth_bp, url_prefix='/api/auth')
     app.register_blueprint(parcel_bp, url_prefix='/api/parcels')
     app.register_blueprint(admin_bp, url_prefix='/api/admin')
