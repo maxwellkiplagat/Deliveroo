@@ -1,9 +1,10 @@
+// vite.config.js
 import { defineConfig } from 'vite'
-import path from 'path'
 
 export default defineConfig({
   root: 'src',
   build: {
-    outDir: '../dist'
+    outDir: '../dist',      // output in project root/dist
+    emptyOutDir: true       // fix warning about not emptying folder
   }
 })
