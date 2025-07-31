@@ -75,25 +75,32 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
 
+    CORS(app, supports_credentials=True, resources={
+        r"/api/*": {
+            "origins": "https://deliveroo-frontend-t4xb.onrender.com"
+        }
+    })
+
+
     # Initialize extensions
     db.init_app(app)
     migrate.init_app(app, db)
     JWTManager(app)
     mail.init_app(app)
-    CORS(
-        app,
-        resources={
-            r"/api/*": {
-                "origins": [
+    # CORS(
+    #     app,
+    #     resources={
+    #         r"/api/*": {
+    #             "origins": [
                     
-                    "https://deliveroo-frontend-t4xb.onrender.com"
-                ]
-            }
-        },
-        supports_credentials=True,
-        methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-        allow_headers=["Content-Type", "Authorization"]
-    )
+    #                 "https://deliveroo-frontend-t4xb.onrender.com"
+    #             ]
+    #         }
+    #     },
+    #     supports_credentials=True,
+    #     methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    #     allow_headers=["Content-Type", "Authorization"]
+    # )
 
     # Register blueprints
     app.register_blueprint(auth_bp, url_prefix='/api/auth')
