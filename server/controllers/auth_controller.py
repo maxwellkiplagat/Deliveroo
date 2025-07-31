@@ -43,11 +43,15 @@ class AuthController:
                 return jsonify({'error': 'Invalid credentials'}), 401
             
             access_token = create_access_token(identity=user.id)
-            
-            return jsonify({
-                'user': user.to_dict(),
-                'token': access_token
-            }), 200
+            response = make_response(jsonify({'user': user.to_dict()}), 200)
+            response.set_cookie(
+                "access_token_cookie",
+                access_token,
+                httponly=True,
+                secure=True,
+                samesite="None"
+            )
+return response
             
         except Exception as e:
             return jsonify({'error': str(e)}), 500
