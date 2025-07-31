@@ -10,6 +10,13 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     JWT_SECRET_KEY = os.environ.get('JWT_SECRET_KEY') or 'jwt-secret-key'
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=24)
+
+    JWT_SECRET_KEY = "your-secret-key"
+    JWT_TOKEN_LOCATION = ["cookies"]
+    JWT_ACCESS_COOKIE_NAME = "access_token_cookie"
+    JWT_COOKIE_SECURE = True  # Render uses HTTPS
+    JWT_COOKIE_SAMESITE = "None"
+    JWT_COOKIE_CSRF_PROTECT = False 
     
     # Email configuration
     MAIL_SERVER = os.environ.get('MAIL_SERVER') or 'smtp.gmail.com'
