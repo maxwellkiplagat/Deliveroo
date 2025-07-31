@@ -1,10 +1,12 @@
 // vite.config.js
-import { defineConfig } from 'vite'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
 
 export default defineConfig({
-  root: 'src',
+  root: './src',
+  plugins: [react()],
   build: {
-    outDir: '../dist',      // output in project root/dist
-    emptyOutDir: true       // fix warning about not emptying folder
+    outDir: '../dist', // build output outside of src
+    emptyOutDir: true,
   }
-})
+});
