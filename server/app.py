@@ -62,7 +62,7 @@ from flask_jwt_extended import JWTManager
 from flask_mail import Mail
 from flask_migrate import Migrate
 
-from config import config
+from config import Config
 from models import db
 from routes.auth_routes import auth_bp
 from routes.parcel_routes import parcel_bp
@@ -73,7 +73,7 @@ mail = Mail()
 
 def create_app():
     app = Flask(__name__)
-    app.config.from_object(config)
+    app.config.from_object(Config)
 
     # Initialize extensions
     db.init_app(app)
