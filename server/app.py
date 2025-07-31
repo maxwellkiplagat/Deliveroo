@@ -86,7 +86,7 @@ def create_app():
             r"/api/*": {
                 "origins": [
                     
-                    "https://deliveroo-frontend-t4xb.onrender.com/"
+                    "https://deliveroo-frontend-t4xb.onrender.com"
                 ]
             }
         },
