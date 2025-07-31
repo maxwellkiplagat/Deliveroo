@@ -1,5 +1,4 @@
 from flask import jsonify, make_response
-from flask import jsonify
 from flask_jwt_extended import create_access_token
 from models import db, User
 from utils.email import send_welcome_email
