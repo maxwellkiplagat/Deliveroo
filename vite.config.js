@@ -3,16 +3,14 @@ import react from '@vitejs/plugin-react';
 import path from 'path';
 
 export default defineConfig({
-  root: path.resolve(__dirname, 'src'),
+  root: 'src', // Simplified path
   build: {
-    outDir: path.resolve(__dirname, 'dist'),
-    rollupOptions: {
-      input: path.resolve(__dirname, 'src/index.html')
-    }
+    outDir: '../dist', // Relative to root
+    emptyOutDir: true, // Cleans the directory
   },
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, 'src')
+      '@': path.resolve(__dirname, 'src') // Keep this as is
     }
   },
   plugins: [react()],
