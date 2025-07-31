@@ -50,9 +50,9 @@ class AuthController:
                 httponly=True,
                 secure=True,
                 samesite="None"
-            )
-return response
-            
+                        )
+            return response
+                    
         except Exception as e:
             return jsonify({'error': str(e)}), 500
     
