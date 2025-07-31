@@ -4,10 +4,10 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "lint": "eslint .",
+    "dev": "vite --config src/vite.config.js",
+    "build": "vite build --config src/vite.config.js",
     "preview": "vite preview",
+    "lint": "eslint .",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage"
@@ -49,11 +49,4 @@
     "typescript-eslint": "^8.3.0",
     "vite": "^5.4.19"
   }
-  {
-  "scripts": {
-    "dev": "vite --config src/vite.config.js",
-    "build": "vite build --config src/vite.config.js",
-    "preview": "vite preview"
-  }
-}
 }
