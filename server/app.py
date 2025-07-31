@@ -82,7 +82,14 @@ def create_app():
     mail.init_app(app)
     CORS(
         app,
-        resources={r"/api/*": {"origins": "https://deliveroo-frontend-t4xb.onrender.com","https://deliveroo-frontend-t4xb.onrender.com/"}},  # Allow all for deployment unless specific
+        resources={
+            r"/api/*": {
+                "origins": [
+                    "https://deliveroo-frontend-t4xb.onrender.com",
+                    "https://deliveroo-frontend-t4xb.onrender.com/"
+                ]
+            }
+        },
         supports_credentials=True,
         methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
         allow_headers=["Content-Type", "Authorization"]
