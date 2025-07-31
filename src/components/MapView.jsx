@@ -9,7 +9,7 @@ function MapView({ pickup, destination, currentLocation, className = '' }) {
   useEffect(() => {
     // Check if API key is available
     if (!apiKey) {
-      console.error('Google Maps API key not found. Please set VITE_GOOGLE_MAPS_API_KEY in your .env file');
+      console.error('oOOPS, map fixing in progress...');
       return;
     }
 
