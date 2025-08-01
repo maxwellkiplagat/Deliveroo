@@ -2,7 +2,7 @@ import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { logout } from '../redux/userSlice';
-import { Package, User, LogOut, Shield,CarTaxiFront  } from 'lucide-react';
+import { Package, User, LogOut, Shield,CarTaxiFront, LayoutDashboard  } from 'lucide-react';
 import NotificationCenter from './NotificationCenter';
 
 function Navbar() {
@@ -31,7 +31,7 @@ function Navbar() {
                   to="/dashboard"
                   className="flex items-center space-x-1 px-3 py-2 text-gray-700 hover:text-emerald-600 transition-colors"
                 >
-                  <Package className="h-4 w-4" />
+                  <LayoutDashboard className="h-4 w-4" />
                   <span>Dashboard</span>
                 </Link>
                 
