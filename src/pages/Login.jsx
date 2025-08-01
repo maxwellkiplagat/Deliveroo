@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { loginUser, clearError } from '../redux/userSlice';
-import { Package, Mail, Lock, User } from 'lucide-react';
+import { Package, Mail, Lock, UserCheck } from 'lucide-react';
 
 function Login() {
   const [formData, setFormData] = useState({
@@ -35,7 +35,7 @@ function Login() {
       <div className="max-w-md w-full space-y-8">
         <div>
           <div className="flex justify-center">
-            <User className="h-12 w-12 text-emerald-600" />
+            <UserCheck className="h-12 w-12 text-emerald-600" />
           </div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
             Sign in to your account
