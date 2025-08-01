@@ -77,7 +77,8 @@ def create_app():
 
     CORS(app, supports_credentials=True, resources={
         r"/api/*": {
-            "origins": "https://deliveroo-frontend-t4xb.onrender.com"
+            "origins": "https://deliveroo-frontend-t4xb.onrender.com",
+            "http://localhost:3000"
         }
     })
 
