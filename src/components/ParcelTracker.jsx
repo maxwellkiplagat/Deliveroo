@@ -126,7 +126,7 @@ function ParcelTracker({ trackingNumber, onTrackingResult }) {
     setError('');
 
     try {
-      const res = await fetch(`https://deliveroo-f2ec.onrender.com/api/parcel/track/${tracking}`);
+      const res = await fetch(`https://deliveroo-f2ec.onrender.com/api/parcels/track/${tracking}`);
       if (!res.ok) throw new Error('Parcel not found');
       
       const data = await res.json();
