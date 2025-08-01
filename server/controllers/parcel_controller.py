@@ -1,12 +1,12 @@
-
+import os
 from flask import jsonify
 from models import db, Parcel, Location, User
 from utils.email import send_status_update_email
 import uuid
 import traceback 
 from flask_jwt_extended import get_jwt_identity
-import requests  # Required for geocoding
-
+import requests 
+apiKey = os.getenv("VITE_GOOGLE_MAPS_API_KEY")
 class ParcelController:
     def create_parcel(self, user_id, data):
         try:
@@ -245,8 +245,8 @@ class ParcelController:
 
     def _geocode_address(self, address):
         try:
-            API_KEY = 'AIzaSyC1CNPsIUL6W_lAR2LN-Hs7C6QicDjBdqo'
-  # Replace with your key
+            API_KEY = apiKey
+  
             response = requests.get(f'https://maps.googleapis.com/maps/api/geocode/json?address={address}&key={API_KEY}')
             res_json = response.json()
             if res_json['status'] == 'OK':
