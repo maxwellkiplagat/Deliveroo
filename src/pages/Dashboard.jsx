@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchParcels, createParcel } from '../redux/parcelsSlice';
 import { addNotification } from '../redux/notificationSlice';
-import { Plus, Package, Search, Filter, MapPin, Calendar, Weight, DollarSign, User, Phone } from 'lucide-react';
+import { Plus, Package, Search, Filter, MapPin, Calendar, Weight, DollarSign, User, Phone, MailCheck, Send, Handshake } from 'lucide-react';
 import ParcelCard from '../components/ParcelCard';
 import SearchFilter from '../components/SearchFilter';
 import LoadingSpinner from '../components/LoadingSpinner';
@@ -398,7 +398,7 @@ function Dashboard() {
               <p className="text-sm text-gray-600">Total Parcels</p>
               <p className="text-2xl font-bold text-gray-900">{stats.total}</p>
             </div>
-            <Package className="h-8 w-8 text-emerald-600" />
+            <MailCheck className="h-8 w-8 text-emerald-600" />
           </div>
         </div>
         <div className="bg-white p-6 rounded-lg shadow-md">
@@ -416,7 +416,7 @@ function Dashboard() {
               <p className="text-sm text-gray-600">In Transit</p>
               <p className="text-2xl font-bold text-blue-600">{stats.inTransit}</p>
             </div>
-            <Package className="h-8 w-8 text-blue-600" />
+            <Send className="h-8 w-8 text-blue-600" />
           </div>
         </div>
         <div className="bg-white p-6 rounded-lg shadow-md">
@@ -425,7 +425,7 @@ function Dashboard() {
               <p className="text-sm text-gray-600">Delivered</p>
               <p className="text-2xl font-bold text-green-600">{stats.delivered}</p>
             </div>
-            <Package className="h-8 w-8 text-green-600" />
+            <Handshake className="h-8 w-8 text-green-600" />
           </div>
         </div>
       </div>
