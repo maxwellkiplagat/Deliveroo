@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { registerUser, clearError } from '../redux/userSlice';
-import { Package, Mail, Lock, User, Phone } from 'lucide-react';
+import { Package, Mail, Lock, User, Phone,UserRoundPlus  } from 'lucide-react';
 
 function Register() {
   const [formData, setFormData] = useState({
@@ -42,7 +42,7 @@ function Register() {
       <div className="max-w-md w-full space-y-8">
         <div>
           <div className="flex justify-center">
-            <Package className="h-12 w-12 text-emerald-600" />
+            <UserRoundPlus  className="h-12 w-12 text-emerald-600" />
           </div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
             Create your account
