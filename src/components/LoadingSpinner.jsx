@@ -4,22 +4,30 @@ import React from 'react';
 const LoadingSpinner = () => {
   return (
     <div className="flex items-center justify-center h-32">
-      <div className="w-24 h-24 bg-gradient-to-r from-blue-500 to-emerald-400 rounded-full animate-[blob_5s_infinite] blur-sm mix-blend-multiply opacity-80">
-        <style>
-          {`
-            @keyframes blob {
-              0%, 100% {
-                border-radius: 42% 58% 31% 69% / 58% 42% 58% 42%;
-              }
-              50% {
-                border-radius: 70% 30% 52% 48% / 30% 69% 31% 70%;
-              }
-            }
-          `}
-        </style>
+      <div className="relative w-16 h-16">
+        <div className="absolute inset-0 rounded-full border-4 border-t-emerald-500 animate-spin-slow" />
+        <div className="absolute inset-2 rounded-full bg-emerald-500 animate-pulse shadow-lg shadow-emerald-500/30" />
       </div>
+      <style>
+        {`
+          @keyframes spin-slow {
+            0% {
+              transform: rotate(0deg);
+            }
+            100% {
+              transform: rotate(360deg);
+            }
+          }
+
+          .animate-spin-slow {
+            animation: spin-slow 1.8s linear infinite;
+          }
+        `}
+      </style>
     </div>
   );
 };
 
 export default LoadingSpinner;
+
+
