@@ -104,7 +104,7 @@ function ParcelDetails() {
   const canCancel = parcel.status !== 'delivered' && parcel.status !== 'cancelled';
 
   return (
-    <div className="max-w-4xl mx-auto px-2 sm:px-4 lg:px-6">
+    <div className="max-w-4xl mx-auto px-2 sm:px-4 lg:px-6 pt-16">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 sm:mb-6 gap-2">
         <button
           onClick={() => navigate('/dashboard')}
