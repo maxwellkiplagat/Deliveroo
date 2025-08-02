@@ -123,7 +123,7 @@ function MapView({ pickup, destination, currentLocation, className = '' }) {
       <div className={`w-full h-96 rounded-lg overflow-hidden bg-gray-100 flex items-center justify-center ${className}`}>
         <div className="text-center p-6">
           <p className="text-gray-600 mb-2">Google Maps API key not configured</p>
-          <p className="text-sm text-gray-500">Please set VITE_GOOGLE_MAPS_API_KEY in your .env file</p>
+          <p className="text-sm text-gray-500">Oops map fixing in progress...</p>
         </div>
       </div>
     );
