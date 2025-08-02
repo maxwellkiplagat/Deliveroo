@@ -367,7 +367,7 @@ function Dashboard() {
   return (
     <div className="max-w-7xl mx-auto">
       {/* Header */}
-      <div className="flex justify-between items-center mb-8">
+{/*       <div className="flex justify-between items-center mb-8">        
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
           <p className="text-gray-600">Welcome back, {user?.name}!</p>
@@ -388,7 +388,30 @@ function Dashboard() {
             <span>New Parcel</span>
           </button>
         </div>
+      </div> */}
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8">
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Dashboard</h1>
+          <p className="text-gray-600">Welcome back, {user?.name}!</p>
+        </div>
+        <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
+          <button
+            onClick={() => setShowAddressModal(true)}
+            className="flex items-center justify-center space-x-2 px-4 py-2 border border-emerald-600 text-emerald-600 rounded-lg hover:bg-emerald-50 transition-colors"
+          >
+            <MapPin className="h-4 w-4" />
+            <span>Saved Addresses</span>
+          </button>
+          <button
+            onClick={() => setShowCreateModal(true)}
+            className="flex items-center justify-center space-x-2 px-6 py-3 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors"
+          >
+            <Plus className="h-4 w-4" />
+            <span>New Parcel</span>
+          </button>
+        </div>
       </div>
+
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
