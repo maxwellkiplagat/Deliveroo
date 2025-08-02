@@ -7,7 +7,7 @@ function Home() {
   const [showTracker, setShowTracker] = useState(false);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-50 to-blue-50">
+    <div className="min-h-screen bg-gradient-to-br from-emerald-50 to-blue-50 pt-16">
       {/* Hero Section */}
       <section className="py-20">
         <div className="container mx-auto px-4">
