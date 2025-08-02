@@ -84,6 +84,7 @@
 // }
 
 // eimport React, { useState } from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { logout } from '../redux/userSlice';
@@ -193,4 +194,3 @@ function Navbar() {
 }
 
 export default Navbar;
-xport default Navbar;
