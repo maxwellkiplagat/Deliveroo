@@ -55,12 +55,15 @@ function Navbar() {
           />
         </div>
 
-        {/* Links */}
+        {/* Links */}       
         <div
-          className={`lg:flex lg:items-center lg:space-x-6 absolute lg:static top-16 left-0 w-full lg:w-auto backdrop-blur-md bg-white/30 border-t border-white/10 transition-all duration-300 ease-in-out overflow-hidden ${
-            menuOpen ? 'max-h-screen py-4 shadow-md' : 'max-h-0 lg:max-h-screen'
+          className={`lg:flex lg:items-center lg:space-x-6 absolute lg:static top-16 left-0 w-full lg:w-auto transition-all duration-300 ease-in-out overflow-hidden ${
+            menuOpen
+              ? 'backdrop-blur-xl bg-white/70 dark:bg-black/60 max-h-screen py-6 shadow-2xl'
+              : 'max-h-0 lg:max-h-screen'
           }`}
         >
+
           {isAuthenticated ? (
             <>
               <Link
