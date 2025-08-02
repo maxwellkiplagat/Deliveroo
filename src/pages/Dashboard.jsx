@@ -359,7 +359,7 @@ function Dashboard() {
     return (
       <div className="flex justify-center items-center h-64">
         <LoadingSpinner size="lg" />
-        <span className="ml-3 text-gray-600">Loading Dashboard...</span>
+        <span className="ml-3 text-gray-600"></span>
       </div>
     );
   }
