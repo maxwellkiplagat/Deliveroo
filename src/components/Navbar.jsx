@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
@@ -27,13 +26,13 @@ function Navbar() {
   return (
     <nav className="backdrop-blur-md bg-white/30 border-b border-white/20 shadow-xl z-50 fixed top-0 left-0 w-full">
       <div className="container mx-auto px-4 flex justify-between items-center h-16">
-        {/* Logo */}
+        
         <Link to="/" className="flex items-center space-x-2">
           <CarTaxiFront className="h-8 w-8 text-emerald-600" />
           <span className="text-2xl font-bold text-emerald-600">Deliveroo</span>
         </Link>
 
-        {/* Hamburger */}
+        
         <div
           className="lg:hidden flex flex-col justify-center items-center w-8 h-8 cursor-pointer z-50 relative"
           onClick={() => setMenuOpen(!menuOpen)}
@@ -55,11 +54,11 @@ function Navbar() {
           />
         </div>
 
-        {/* Links */}       
+        
         <div
-          className={`lg:flex lg:items-center lg:space-x-6 absolute lg:static top-16 left-0 w-full lg:w-auto bg-white transition-all duration-300 ease-in-out overflow-hidden ${
+          className={`lg:flex lg:items-center lg:space-x-6 absolute lg:static top-16 left-0 w-full lg:w-auto bg-white transition-all duration-300 ease-in-out ${
             menuOpen ? 'max-h-screen py-4 shadow-md' : 'max-h-0 lg:max-h-screen'
-          }`}
+          } overflow-y-auto z-40`} 
         >
           {isAuthenticated ? (
             <>
@@ -81,15 +80,18 @@ function Navbar() {
                 </Link>
               )}
 
-              <div className="block px-4 py-2">
+              
+              <div className="block px-4 py-2 relative z-50">
                 <NotificationCenter />
               </div>
 
+              {/* User Info */}
               <div className="flex items-center px-4 py-2 text-gray-800">
                 <User className="h-4 w-4 mr-1" />
                 <span className="text-sm">{user?.name}</span>
               </div>
 
+              {/* Logout */}
               <button
                 onClick={handleLogout}
                 className="flex items-center px-4 py-2 text-gray-800 hover:text-red-600 transition-colors"
@@ -121,5 +123,3 @@ function Navbar() {
 }
 
 export default Navbar;
-
-
