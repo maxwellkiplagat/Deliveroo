@@ -1,127 +1,55 @@
 import React, { useState, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { addNotification } from '../redux/notificationSlice';
-import { Bell, X, Check, AlertCircle, Info, Package } from 'lucide-react';
+import { useSelector } from 'react-redux';
+import { Bell, X, Info } from 'lucide-react';
 import { format } from 'date-fns';
-import api from '../services/api';
 
 function NotificationCenter() {
   const [isOpen, setIsOpen] = useState(false);
   const [notifications, setNotifications] = useState([]);
-  const [loading, setLoading] = useState(true);
   const { isAuthenticated } = useSelector(state => state.user);
-  const dispatch = useDispatch();
 
   useEffect(() => {
     if (isAuthenticated) {
-      fetchNotifications();
-      // Set up periodic refresh for notifications
-      const interval = setInterval(fetchNotifications, 30000); // Refresh every 30 seconds
-      return () => clearInterval(interval);
-    }
-  }, [isAuthenticated]);
+      // Replace with just one welcome notification
+      const welcomeNotification = [{
+        id: 1,
+        type: 'info',
+        title: 'Welcome!',
+        message: 'We’re glad to have you onboard. Stay tuned for updates.',
+        createdAt: new Date().toISOString(),
+        read: false
+      }];
 
-  const fetchNotifications = async () => {
-    try {
-      if (!loading) setLoading(true);
-      
-      // Mock notifications for demo - in real app this would be API call
-      const mockNotifications = [
-        {
-          id: 1,
-          type: 'parcel_created',
-          title: 'Parcel Created',
-          message: 'Your parcel has been created successfully',
-          createdAt: new Date(Date.now() - 5 * 60 * 1000).toISOString(),
-          read: false
-        },
-        {
-          id: 2,
-          type: 'status_update',
-          title: 'Status Update',
-          message: 'Your parcel is now in transit',
-          createdAt: new Date(Date.now() - 30 * 60 * 1000).toISOString(),
-          read: false
-        },
-        {
-          id: 3,
-          type: 'delivery',
-          title: 'Delivery Complete',
-          message: 'Your parcel has been delivered',
-          createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-          read: true
-        }
-      ];
-      
-      const notificationsWithDates = mockNotifications.map(notification => ({
+      const notificationsWithDates = welcomeNotification.map(notification => ({
         ...notification,
         timestamp: new Date(notification.createdAt)
       }));
-      
+
       setNotifications(notificationsWithDates);
-    } catch (error) {
-      console.error('Failed to fetch notifications:', error);
-      // Add error notification
-      dispatch(addNotification({
-        type: 'error',
-        message: 'Failed to load notifications'
-      }));
-    } finally {
-      setLoading(false);
     }
+  }, [isAuthenticated]);
+
+  const markAsRead = (id) => {
+    setNotifications(prev =>
+      prev.map(n => (n.id === id ? { ...n, read: true } : n))
+    );
+  };
+
+  const removeNotification = (id) => {
+    setNotifications(prev => prev.filter(n => n.id !== id));
+  };
+
+  const markAllAsRead = () => {
+    setNotifications(prev => prev.map(n => ({ ...n, read: true })));
   };
 
   const unreadCount = notifications.filter(n => !n.read).length;
 
   const getNotificationIcon = (type) => {
-    switch (type) {
-      case 'status_update': return <Package className="h-4 w-4 text-blue-600" />;
-      case 'delivery': return <Check className="h-4 w-4 text-green-600" />;
-      case 'warning': return <AlertCircle className="h-4 w-4 text-yellow-600" />;
-      case 'info': return <Info className="h-4 w-4 text-gray-600" />;
-      default: return <Bell className="h-4 w-4 text-gray-600" />;
-    }
+    return <Info className="h-4 w-4 text-blue-500" />;
   };
 
-  const markAsRead = (id) => {
-    try {
-      // Update local state immediately for better UX
-      setNotifications(prev => 
-        prev.map(n => n.id === id ? { ...n, read: true } : n)
-      );
-      
-      // In a real app, you would make an API call here
-      // api.put(`/notifications/${id}`, { read: true });
-    } catch (error) {
-      console.error('Failed to mark notification as read:', error);
-    }
-  };
-
-  const markAllAsRead = () => {
-    try {
-      setNotifications(prev => prev.map(n => ({ ...n, read: true })));
-      
-      // In a real app, you would make an API call here
-      // api.put('/notifications/mark-all-read');
-    } catch (error) {
-      console.error('Failed to mark all notifications as read:', error);
-    }
-  };
-
-  const removeNotification = (id) => {
-    try {
-      setNotifications(prev => prev.filter(n => n.id !== id));
-      
-      // In a real app, you would make an API call here
-      // api.delete(`/notifications/${id}`);
-    } catch (error) {
-      console.error('Failed to remove notification:', error);
-    }
-  };
-
-  if (!isAuthenticated) {
-    return null;
-  }
+  if (!isAuthenticated) return null;
 
   return (
     <div className="relative">
@@ -162,12 +90,7 @@ function NotificationCenter() {
             </div>
 
             <div className="max-h-64 overflow-y-auto">
-              {loading ? (
-                <div className="p-4 text-center">
-                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-emerald-600 mx-auto mb-2 border-t-2"></div>
-                  <p className="text-gray-500 text-sm">Loading notifications...</p>
-                </div>
-              ) : notifications.length === 0 ? (
+              {notifications.length === 0 ? (
                 <div className="p-4 text-center text-gray-500">
                   <Bell className="h-8 w-8 mx-auto mb-2 text-gray-300" />
                   <p>No notifications</p>
