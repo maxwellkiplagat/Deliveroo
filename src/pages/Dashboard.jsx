@@ -602,7 +602,7 @@ function Dashboard() {
                     value={formData.pickupAddress}
                     onChange={(value) => handleAddressSelect({ address: value }, 'pickupAddress')}
                     onLocationSelect={(locationData) => handleLocationSelect(locationData, 'pickup')}
-                    placeholder="Enter pickup address"
+                    placeholder="Enter pickup address e.g Nairobi,Kenya"
                   />
                 </div>
                 <div>
@@ -613,7 +613,7 @@ function Dashboard() {
                     value={formData.destinationAddress}
                     onChange={(value) => handleAddressSelect({ address: value }, 'destinationAddress')}
                     onLocationSelect={(locationData) => handleLocationSelect(locationData, 'destination')}
-                    placeholder="Enter destination address"
+                    placeholder="Enter destination address E.g Mtito Andei,Kenya"
                   />
                 </div>
                 
