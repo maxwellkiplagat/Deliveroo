@@ -14,11 +14,9 @@ class AuthController:
 
     def register(self, data):
         try:
-            # Check if user already exists
             if User.query.filter_by(email=data['email']).first():
                 return jsonify({'error': 'Email already registered'}), 400
             
-            # Create new user
             user = User(
                 name=data['name'],
                 email=data['email'],
@@ -29,7 +27,6 @@ class AuthController:
             db.session.add(user)
             db.session.commit()
             
-            # Send welcome email in background so SMTP never blocks registration
             app = current_app._get_current_object()
             threading.Thread(
                 target=self._send_email_async,
@@ -37,9 +34,11 @@ class AuthController:
                 daemon=True
             ).start()
             
-            # Create access token
             access_token = create_access_token(identity=user.id)
-            response = make_response(jsonify({'user': user.to_dict()}), 200)
+            response = make_response(jsonify({
+                'user': user.to_dict(),
+                'access_token': access_token
+            }), 200)
             response.set_cookie(
                 "access_token_cookie",
                 access_token,
@@ -51,4 +50,39 @@ class AuthController:
             
         except Exception as e:
             db.session.rollback()
+            return jsonify({'error': str(e)}), 500
+
+    def login(self, data):
+        try:
+            user = User.query.filter_by(email=data['email']).first()
+            
+            if not user or not user.check_password(data['password']):
+                return jsonify({'error': 'Invalid credentials'}), 401
+            
+            access_token = create_access_token(identity=user.id)
+            response = make_response(jsonify({
+                'user': user.to_dict(),
+                'access_token': access_token
+            }), 200)
+            response.set_cookie(
+                "access_token_cookie",
+                access_token,
+                httponly=True,
+                secure=True,
+                samesite="None"
+            )
+            return response
+                    
+        except Exception as e:
+            return jsonify({'error': str(e)}), 500
+
+    def get_profile(self, user_id):
+        try:
+            user = User.query.get(user_id)
+            if not user:
+                return jsonify({'error': 'User not found'}), 404
+            
+            return jsonify(user.to_dict()), 200
+            
+        except Exception as e:
             return jsonify({'error': str(e)}), 500
