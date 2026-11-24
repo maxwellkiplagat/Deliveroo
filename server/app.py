@@ -1,4 +1,3 @@
-
 from flask import Flask, jsonify
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
@@ -18,19 +17,27 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
 
+    # Allow JWTs from both Authorization headers and HttpOnly cookies
+    app.config.setdefault("JWT_TOKEN_LOCATION", ["headers", "cookies"])
+    app.config.setdefault("JWT_COOKIE_SECURE", True)
+    app.config.setdefault("JWT_COOKIE_SAMESITE", "None")
+    app.config.setdefault("JWT_COOKIE_CSRF_PROTECT", False)
+
     CORS(app, supports_credentials=True, resources={
         r"/api/*": {
-            "origins": "https://deliveroo-frontend-t4xb.onrender.com"            
+            "origins": "https://deliveroo-frontend-t4xb.onrender.com"
         }
     })
-
 
     # Initialize extensions
     db.init_app(app)
     migrate.init_app(app, db)
     JWTManager(app)
     mail.init_app(app)
-    
+
+    # Create database tables automatically when Gunicorn boots
+    with app.app_context():
+        db.create_all()
 
     # Register blueprints
     app.register_blueprint(auth_bp, url_prefix='/api/auth')
@@ -56,7 +63,4 @@ def create_app():
 # Entry point
 if __name__ == '__main__':
     app = create_app()
-    with app.app_context():
-        db.create_all()
     app.run(debug=False, host='0.0.0.0', port=5000)
-
