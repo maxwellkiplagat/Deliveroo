@@ -5,7 +5,7 @@ from flask_mail import Mail
 from flask_migrate import Migrate
 
 from config import Config
-from models import db
+from models import db, User
 from routes.auth_routes import auth_bp
 from routes.parcel_routes import parcel_bp
 from routes.admin_routes import admin_bp
@@ -35,9 +35,27 @@ def create_app():
     JWTManager(app)
     mail.init_app(app)
 
-    # Create database tables automatically when Gunicorn boots
+    # Create database tables and ensure admin account exists when Gunicorn boots
     with app.app_context():
         db.create_all()
+
+        # Promote existing user to admin if registered
+        existing_user = User.query.filter_by(email="maxwellkiplagat0@gmail.com").first()
+        if existing_user and existing_user.role != "admin":
+            existing_user.role = "admin"
+            db.session.commit()
+
+        # Create default admin user if not already in database
+        if not User.query.filter_by(email="admin@deliveroo.com").first():
+            admin_user = User(
+                name="Deliveroo Admin",
+                email="admin@deliveroo.com",
+                phone="0700000000",
+                role="admin"
+            )
+            admin_user.set_password("Admin@123")
+            db.session.add(admin_user)
+            db.session.commit()
 
     # Register blueprints
     app.register_blueprint(auth_bp, url_prefix='/api/auth')
