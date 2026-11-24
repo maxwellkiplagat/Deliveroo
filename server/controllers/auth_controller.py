@@ -34,7 +34,7 @@ class AuthController:
                 daemon=True
             ).start()
             
-            access_token = create_access_token(identity=user.id)
+            access_token = create_access_token(identity=str(user.id))
             response = make_response(jsonify({
                 'user': user.to_dict(),
                 'access_token': access_token
@@ -59,7 +59,7 @@ class AuthController:
             if not user or not user.check_password(data['password']):
                 return jsonify({'error': 'Invalid credentials'}), 401
             
-            access_token = create_access_token(identity=user.id)
+            access_token = create_access_token(identity=str(user.id))
             response = make_response(jsonify({
                 'user': user.to_dict(),
                 'access_token': access_token
@@ -78,7 +78,7 @@ class AuthController:
 
     def get_profile(self, user_id):
         try:
-            user = User.query.get(user_id)
+            user = User.query.get(int(user_id))
             if not user:
                 return jsonify({'error': 'User not found'}), 404
             
