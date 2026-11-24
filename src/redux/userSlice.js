@@ -8,7 +8,7 @@ export const loginUser = createAsyncThunk(
       const response = await api.post('/auth/login', { email, password });
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.message || 'Login failed');
+      return rejectWithValue(error.response?.data?.error || error.message || 'Login failed');
     }
   }
 );
@@ -20,7 +20,7 @@ export const registerUser = createAsyncThunk(
       const response = await api.post('/auth/register', { name, email, password, phone });
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.message || 'Registration failed');
+      return rejectWithValue(error.response?.data?.error || error.message || 'Registration failed');
     }
   }
 );
@@ -53,7 +53,10 @@ const userSlice = createSlice({
         state.loading = false;
         state.user = action.payload.user;
         state.isAuthenticated = true;
-        localStorage.setItem('token', action.payload.token);
+        const token = action.payload.access_token || action.payload.token;
+        if (token) {
+          localStorage.setItem('token', token);
+        }
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
@@ -67,7 +70,10 @@ const userSlice = createSlice({
         state.loading = false;
         state.user = action.payload.user;
         state.isAuthenticated = true;
-        localStorage.setItem('token', action.payload.token);
+        const token = action.payload.access_token || action.payload.token;
+        if (token) {
+          localStorage.setItem('token', token);
+        }
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.loading = false;
