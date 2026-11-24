@@ -17,11 +17,11 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
 
-    # Allow JWTs from both Authorization headers and HttpOnly cookies
-    app.config.setdefault("JWT_TOKEN_LOCATION", ["headers", "cookies"])
-    app.config.setdefault("JWT_COOKIE_SECURE", True)
-    app.config.setdefault("JWT_COOKIE_SAMESITE", "None")
-    app.config.setdefault("JWT_COOKIE_CSRF_PROTECT", False)
+    # Override Config so JWTs work via both Authorization headers and cookies
+    app.config["JWT_TOKEN_LOCATION"] = ["headers", "cookies"]
+    app.config["JWT_COOKIE_SECURE"] = True
+    app.config["JWT_COOKIE_SAMESITE"] = "None"
+    app.config["JWT_COOKIE_CSRF_PROTECT"] = False
 
     CORS(app, supports_credentials=True, resources={
         r"/api/*": {
